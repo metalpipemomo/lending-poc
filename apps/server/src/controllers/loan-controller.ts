@@ -8,6 +8,7 @@ const { ObjectId } = require('mongodb');
 // Get all loan offers from DB
 export const getLoanOffers = async (req, res) => {
   // TODO: update find method to select data from cluster for loan offers
+  // Mongo has yet to hold any data
   const offers = await Loan.find({}); // blank obj to get all 
   res.status(200).json(offers);
 }
@@ -15,6 +16,7 @@ export const getLoanOffers = async (req, res) => {
 // Get all loan requests from DB
 export const getLoanRequests = async (req, res) => {
   // TODO: update find method to select data from cluster for loan requests
+  // Mongo has yet to hold any data
   const requests = await Loan.find({}); // blank obj to get all 
   res.status(200).json(requests);
 }
