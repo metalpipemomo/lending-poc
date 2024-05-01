@@ -17,22 +17,22 @@ import {
 
 // Loan offers routes
 // GET all loan offers
-router.get('/loan-service/offers', getLoanOffers);
+router.get('/offers', getLoanOffers);
 // POST a single loan offer
-router.post('/loan-service/offers', createLoanOffer);
+router.post('/offers', createLoanOffer);
 // UPDATE a single loan offer
-router.patch('/loan-service/offers/:id', updateLoanOffer);
+router.patch('/offers/:id', updateLoanOffer);
 // DELETE a single loan offer
-router.delete('/loan-service/offers/:id', deleteLoanOffer);
+router.delete('/offers/:id', deleteLoanOffer);
 
 // Loan requests routes
 // GET all loan requests
-router.get('/loan-service/requests', getLoanRequests);
+router.get('/requests', getLoanRequests);
 // POST a single loan request
-router.post('/loan-service/requests', createLoanRequest);
+router.post('/requests', createLoanRequest);
 // UPDATE a single loan request
-router.patch('/loan-service/requests/:id', updateLoanRequest);
+router.patch('/requests/:id', updateLoanRequest);
 // DELETE a single loan request
-router.delete('/loan-service/requests/:id', deleteLoanRequest);
+router.delete('/requests/:id', deleteLoanRequest);
 
 module.exports = router;

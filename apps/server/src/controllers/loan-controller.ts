@@ -1,5 +1,4 @@
 // Segregates db I/O logic from the routes and models 
-// Different schemas for different collections due to differing nature of ammo and weapon attributes
 const Loan = require('../models/loan-model');
 
 // May need to validate things later
@@ -65,7 +64,7 @@ export const getLoanOffer = async (req, res) => {
   //   return res.status(404).json({error: 'No such loan, invalid ID.'});
   // }
 
-  // // check what type of weapon is being requested
+  // // check what type of is being requested
   // var loan = "";
   // switch(loanType){
   //   case "offer":
