@@ -9,23 +9,23 @@ const loanSchema = new LoanSchema({
     type: mongooseLoanImport.Types.ObjectId,
     required: true
   },
-  userId: { // Requesting user ID
+  userId: { // Requesting user's ID
     type: String,
     required: true
   },
-  loanAmount: {
+  loanAmount: { // The amount being offered or requested by a lender or borrower
     type: Number,
     required: true
   },
-  interestRate: {
+  interestRate: { // The rate at which the borrower incurs interest on the loan amount
     type: Number,
     required: true
   },
-  dueDate: {
+  dueDate: { // The date the loan must be paid back by
     type: Date,
     required: true
   },
-  dateOfIssue: {
+  dateOfIssue: { // The date of this entry being entered to DB
     type: Date,
     Required: true
   },
@@ -33,11 +33,11 @@ const loanSchema = new LoanSchema({
     type: Number,
     required: true
   },
-  numberOfInstallments: {
+  numberOfInstallments: { // How many installments the loanAmount can be split into
     type: Number,
     required: true
   },
-  isLoan: {
+  isLoan: { // TRUE means this is a loan, meaning it is entered by a lender, FALSE meaning this is not a loan but a request from a borrower
     type: String,
     required: true
   },
