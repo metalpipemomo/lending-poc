@@ -36,14 +36,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getLoanOffer = exports.deleteLoanRequest = exports.deleteLoanOffer = exports.updateLoanRequest = exports.updateLoanOffer = exports.createLoanRequest = exports.createLoanOffer = exports.getLoanRequests = exports.getLoanOffers = void 0;
+exports.getLoanInfo = exports.deleteLoan = exports.updateLoan = exports.createLoan = exports.getLoans = void 0;
 // Segregates db I/O logic from the routes and models 
 var Loan = require('../models/loan-model');
 // May need to validate things later
 var mongoose = require('mongoose');
 var ObjectId = require('mongodb').ObjectId;
 // Get all loan offers from DB
-var getLoanOffers = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+var getLoans = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var offers;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -55,67 +55,32 @@ var getLoanOffers = function (req, res) { return __awaiter(void 0, void 0, void 
         }
     });
 }); };
-exports.getLoanOffers = getLoanOffers;
-// Get all loan requests from DB
-var getLoanRequests = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var requests;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, Loan.find({})];
-            case 1:
-                requests = _a.sent();
-                res.status(200).json(requests);
-                return [2 /*return*/];
-        }
-    });
-}); };
-exports.getLoanRequests = getLoanRequests;
-// TODO: Define CRUD operation for uploading a single loan offer
-var createLoanOffer = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+exports.getLoans = getLoans;
+// TODO: Define CRUD operation for uploading a single loan offer/request
+var createLoan = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         return [2 /*return*/];
     });
 }); };
-exports.createLoanOffer = createLoanOffer;
-// TODO: Define CRUD operation for uploading a single loan request
-var createLoanRequest = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+exports.createLoan = createLoan;
+// TODO: Define CRUD operation for updating a loan offer/request by ID
+var updateLoan = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         return [2 /*return*/];
     });
 }); };
-exports.createLoanRequest = createLoanRequest;
-// TODO: Define CRUD operation for updating a loan offer by ID
-var updateLoanOffer = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+exports.updateLoan = updateLoan;
+// TODO: Define CRUD operation for deleting a loan offer/request by ID
+var deleteLoan = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         return [2 /*return*/];
     });
 }); };
-exports.updateLoanOffer = updateLoanOffer;
-// TODO: Define CRUD operation for updating a loan request by ID
-var updateLoanRequest = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+exports.deleteLoan = deleteLoan;
+// TODO: Define CRUD operation to get a single loan offer/requests info
+var getLoanInfo = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         return [2 /*return*/];
     });
 }); };
-exports.updateLoanRequest = updateLoanRequest;
-// TODO: Define CRUD operation for deleting a loan offer by ID
-var deleteLoanOffer = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        return [2 /*return*/];
-    });
-}); };
-exports.deleteLoanOffer = deleteLoanOffer;
-// TODO: Define CRUD operation for deleting a loan request by ID
-var deleteLoanRequest = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        return [2 /*return*/];
-    });
-}); };
-exports.deleteLoanRequest = deleteLoanRequest;
-// TODO: Define CRUD operation to get a single loan offer's info
-var getLoanOffer = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        return [2 /*return*/];
-    });
-}); };
-exports.getLoanOffer = getLoanOffer;
+exports.getLoanInfo = getLoanInfo;
