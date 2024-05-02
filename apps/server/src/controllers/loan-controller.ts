@@ -8,7 +8,7 @@ const { ObjectId } = require('mongodb');
 // So both loan request/loan offer = loan data entry, we distinguish which one an entry is with the isLoan parameter
 // With this schema intended effect is we can compare data of separate entries to find matches based on that distinction.
 
-// Get all loan offers from DB
+// CRUD operation to read all loan offers from DB
 export const getLoans = async (req, res) => {
   // Check for errors or empty on response
   try{
@@ -29,9 +29,8 @@ export const getLoans = async (req, res) => {
   }
 }
 
-// CRUD operation to get a single loan offer/requests info by ID
+// CRUD operation to read a single loan offer/requests info by ID
 export const getLoanById = async (req, res) => {
-  console.log("in getLoanById");
   // grab id from passed params which are in req.params
   const { id } = req.params;
 
@@ -54,7 +53,7 @@ export const getLoanById = async (req, res) => {
   }
 }
 
-// TODO: Define CRUD operation for uploading a single loan offer/request
+// CRUD operation to create a single loan offer/request
 export const createLoan = async (req, res) => {
   // Get the data parameters entered by user from post request body
   const loanData = req.body;
@@ -75,8 +74,28 @@ export const createLoan = async (req, res) => {
 
 // TODO: Define CRUD operation for updating a loan offer/request by ID
 export const updateLoan = async (req, res) => {
-  // const updatedLoanOffer = await Loan.
-  // res.status(200).json(updatedLoanOffer);
+  // grab id from passed params which are in req.params
+  const { id } = req.params;
+  // Get the data parameters entered by user from patch request body
+  const dataToUpdate = req.body;
+  // options for findByIdAndUpdate. new indicates to return the modified doc in response of successful patch not the old one.
+  const options = { new: true };
+
+  try{
+    // Use mongoose findByIdAndUpdate function
+    // Params for function: (idToUpdate, updateData, options)
+    // Returns updated document on DB if successful
+    const updatedLoanResult = await Loan.findByIdAndUpdate(id, dataToUpdate, options);
+
+    if(!updatedLoanResult){ // No loan entry found case
+      console.log("No loan found by ID."); // Log detailed error for backend
+      res.status(404).json({message: 'No loan entry found by that ID to update.'})
+    } else { // Loan entry found and updated case
+      res.status(200).json(updatedLoanResult);
+    }
+  } catch(error){
+    res.status(500).json({error: 'Internal error attempting to update loan entry by ID: '});
+  }
 }
 
 // TODO: Define CRUD operation for deleting a loan offer/request by ID
