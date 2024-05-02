@@ -10,10 +10,22 @@ const { ObjectId } = require('mongodb');
 
 // Get all loan offers from DB
 export const getLoans = async (req, res) => {
-  // TODO: update find method to select data from cluster for loan offers
-  // Mongo has yet to hold any data
-  const offers = await Loan.find({}); // blank obj to get all for now
-  res.status(200).json(offers);
+  // Check for errors or empty on response
+  try{
+    // Find method to select all data entries from collection on connected cluster for loan offers
+    const offers = await Loan.find({}); // blank obj to get all
+
+    // Check if response was empty
+    if(offers.length === 0){
+      return res.status(204).send('No loan entries found.'); // 204 no content response
+    }
+
+    // Otherwise return the loan entries as json
+    res.status(200).json(offers);
+  } catch (error) {
+    // 500 error response 
+    res.status(500).send('Internal error attempting to fetch loan entries.');
+  }
 }
 
 // TODO: Define CRUD operation for uploading a single loan offer/request
