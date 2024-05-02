@@ -17,14 +17,40 @@ export const getLoans = async (req, res) => {
 
     // Check if response was empty
     if(offers.length === 0){
-      return res.status(204).send('No loan entries found.'); // 204 no content response
+      // 404 resource not found
+      return res.status(404).send('No loan entries found.');
     }
 
-    // Otherwise return the loan entries as json
+    // Otherwise return 200 OK with the loan entries as json
     res.status(200).json(offers);
   } catch (error) {
-    // 500 error response 
+    // 500 internal error response 
     res.status(500).send('Internal error attempting to fetch loan entries.');
+  }
+}
+
+// TODO: Define CRUD operation to get a single loan offer/requests info by ID
+export const getLoanById = async (req, res) => {
+  console.log("in getLoanById");
+  // grab id from passed params which are in req.params
+  const { id } = req.params;
+
+  // make sure id is valid mongoose type id
+  if(!mongoose.Types.ObjectId.isValid(id)){
+    return res.status(404).json({error: 'No such loan, invalid ID.'});
+  }
+
+  try{
+    // Use Model.findByID to find unique entries
+    const loan = await Loan.findById(id); 
+
+    if(!loan){
+      return res.status(404).json({error: 'No such loan.'});
+    }
+
+    return res.status(200).json(loan);
+  } catch (error) {
+    return res.status(500).json({error: 'Internal error attempting to fetch loan entry by ID.'});
   }
 }
 
@@ -44,31 +70,4 @@ export const updateLoan = async (req, res) => {
 export const deleteLoan = async (req, res) => {
   // const deletedLoanOffer = await Loan.
   // res.status(200).json(deletedLoanOffer);
-}
-
-// TODO: Define CRUD operation to get a single loan offer/requests info
-export const getLoanInfo = async (req, res) => {
-  // // grab id and type from endpoint. endpoint params are in req.params
-  // const { id, loanType} = req.params;
-  // // make sure id is valid mongoose type id
-  // if(!mongoose.Types.ObjectId.isValid(id)){
-  //   return res.status(404).json({error: 'No such loan, invalid ID.'});
-  // }
-
-  // // check what type of is being requested
-  // var loan = "";
-  // switch(loanType){
-  //   case "offer":
-  //     //loan = await Loan.findById(id); 
-  //     break;
-  //   case "request":
-  //     //loan = await Loan.findById(id); 
-  //     break;
-  // }
-
-  // if(loan == null){
-  //   return res.status(404).json({error: "No such loan."}); // have to return to prevent firing rest of code.
-  // }
-  // // Only responds OK if loan is found
-  // res.status(200).json(loan);
 }

@@ -8,14 +8,14 @@ import {
   createLoan,
   updateLoan,
   deleteLoan,
-  getLoanInfo
+  getLoanById
 } from '../controllers/loan-controller';
 
 // Loan routes
 // GET all loan entries
 router.get('/offers', getLoans);
 // GET a single loan entry by ID
-router.get('/offers/:id', getLoanInfo);
+router.get('/offers/:id', getLoanById);
 // POST a single loan entry
 router.post('/offers', createLoan);
 // UPDATE a single loan entry
