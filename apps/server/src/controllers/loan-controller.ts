@@ -72,7 +72,7 @@ export const createLoan = async (req, res) => {
   }
 }
 
-// TODO: Define CRUD operation for updating a loan offer/request by ID
+// CRUD operation for updating a loan offer/request by ID
 export const updateLoan = async (req, res) => {
   // grab id from passed params which are in req.params
   const { id } = req.params;
@@ -94,12 +94,27 @@ export const updateLoan = async (req, res) => {
       res.status(200).json(updatedLoanResult);
     }
   } catch(error){
-    res.status(500).json({error: 'Internal error attempting to update loan entry by ID: '});
+    res.status(500).json({error: 'Internal error attempting to update loan entry by ID'});
   }
 }
 
-// TODO: Define CRUD operation for deleting a loan offer/request by ID
+//Define CRUD operation for deleting a loan offer/request by ID
 export const deleteLoan = async (req, res) => {
-  // const deletedLoanOffer = await Loan.
-  // res.status(200).json(deletedLoanOffer);
+  // grab id from passed params which are in req.params
+  const { id } = req.params;
+
+  try{
+    // Use mongoose findByIdAndDelete function
+    // Returns deleted document from DB if successful
+    const deletedLoanEntry = await Loan.findByIdAndDelete(id);
+
+    if(!deletedLoanEntry){ // No loan entry found to delete
+      console.log("No loan found by ID to delete.");
+      res.status(404).json({message: 'No loan entry found by that ID to delete.'})
+    } else { // Loan entry found and deleted successfully
+      res.status(200).json(deletedLoanEntry);
+    }
+  } catch(error){
+    res.status(500).json({error: 'Internal error attempting to delete loan entry by ID'});
+  }
 }
