@@ -25,8 +25,6 @@ router.delete('/offers/:id', deleteLoan);
 
 module.exports = router;
 
-
-
 /// SWITCHING TO SINGLE LOAN COLLECTION FOR REQUESTS/OFFERS OLD SEGREGATION APPROACH COMMENTED OUT
 // import {
 //   getLoanOffers,

@@ -32,6 +32,10 @@ const userSchema = new UserSchema({
   creditScore: {
     type: Number,
     required: true
+  },
+  createdLoans: { // Proposing we add this data parameter for user schema as it could provide a better way to retrieve all created loan borrows or offers by ID of a certain user
+    type: Array,
+    required: false
   }
 })
 

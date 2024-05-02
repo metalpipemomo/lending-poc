@@ -1,9 +1,12 @@
 // Segregates db I/O logic from the routes and models 
 const Loan = require('../models/loan-model');
-
 // May need to validate things later
 const mongoose = require('mongoose');
 const { ObjectId } = require('mongodb');
+
+// ** REMEMBER WE ARE TREATING LOAN REQUESTS AND LOAN OFFERS AS THE SAME SCHEMA BUT WITH BOOLEAN TO DISTINGUISH
+// So both loan request/loan offer = loan data entry, we distinguish which one an entry is with the isLoan parameter
+// With this schema intended effect is we can compare data of separate entries to find matches based on that distinction.
 
 // Get all loan offers from DB
 export const getLoans = async (req, res) => {
