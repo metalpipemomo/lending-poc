@@ -5,10 +5,6 @@ const MatchSchema = mongooseMatchImport.Schema; // function to create a schema
 
 // We can use it to make a schema to enforce like so.
 const matchSchema = new MatchSchema({
-  _id: { // Auto generated Match ID doubles as unique identifier for token
-    type: mongooseMatchImport.Types.ObjectId,
-    required: true
-  },
   loanerId: { // Id of the user who created the loan offer in db
     type: String,
     required: true

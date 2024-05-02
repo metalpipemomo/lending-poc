@@ -5,10 +5,6 @@ const SessionSchema = mongooseSessionImport.Schema; // function to create a sche
 
 // We can use it to make a schema to enforce like so.
 const sessionSchema = new SessionSchema({
-  _id: { // Auto generated ID doubles as unique identifier for token
-    type: mongooseSessionImport.Types.ObjectId,
-    required: true
-  },
   userId: {
     type: String,
     required: true

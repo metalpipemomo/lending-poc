@@ -29,7 +29,7 @@ export const getLoans = async (req, res) => {
   }
 }
 
-// TODO: Define CRUD operation to get a single loan offer/requests info by ID
+// CRUD operation to get a single loan offer/requests info by ID
 export const getLoanById = async (req, res) => {
   console.log("in getLoanById");
   // grab id from passed params which are in req.params
@@ -56,8 +56,21 @@ export const getLoanById = async (req, res) => {
 
 // TODO: Define CRUD operation for uploading a single loan offer/request
 export const createLoan = async (req, res) => {
-  // const createdLoanOffer = await Loan.
-  // res.status(200).json(createdLoanOffer);
+  // Get the data parameters entered by user from post request body
+  const loanData = req.body;
+
+  try{
+    // Make a new document entry using the Loan mongoose schema using the posted loanData
+    const newLoanEntry = new Loan(loanData); // newLoanEntry is the returned
+    // Asynchronously save the loanData to the mongoDB collection, returns the saved data entry with generated mongoID.
+    const savedLoanEntry = await newLoanEntry.save();
+
+    // respond 201 for new resource creation
+    return res.status(201).json(savedLoanEntry)
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({error: 'Internal error while attempting to create loan entry.'});
+  }
 }
 
 // TODO: Define CRUD operation for updating a loan offer/request by ID

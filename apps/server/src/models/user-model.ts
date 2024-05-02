@@ -5,10 +5,6 @@ const UserSchema = mongooseUserImport.Schema; // function to create a schema
 
 // We can use it to make a schema to enforce like so.
 const userSchema = new UserSchema({
-  _id: { // Auto generated ID doubles as unique identifier for token
-    type: mongooseUserImport.Types.ObjectId,
-    required: true
-  },
   userId: { // Is it going to be same as auto gen id?
     type: String,
     required: false
