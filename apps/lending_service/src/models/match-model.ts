@@ -1,5 +1,5 @@
 // Mongoose enables devs to define schema for documents uploaded to the database. MongoDB is schemaless by default.
-const mongooseMatchImport = require('mongoose');
+import mongooseMatchImport from 'mongoose';
 
 const MatchSchema = mongooseMatchImport.Schema; // function to create a schema
 
@@ -25,4 +25,4 @@ const matchSchema = new MatchSchema({
 
 // Creates a model based on schema to be used for interactions with DB collection of that name.
 // mongoose.model() params: Model name, mongoose schema, target DB collection name
-module.exports = mongooseLoanImport.model('Match', matchSchema, 'matches');
+export const Match = mongooseMatchImport.model('Match', matchSchema, 'matches');

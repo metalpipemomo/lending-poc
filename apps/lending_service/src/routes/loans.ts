@@ -1,5 +1,5 @@
 // IMPORTS
-const express = require('express');
+import * as express from 'express';
 const router = express.Router();
 
 // Importing DB IO methods from controller:
@@ -23,7 +23,7 @@ router.patch('/offers/:id', updateLoan);
 // DELETE a single loan entry
 router.delete('/offers/:id', deleteLoan);
 
-module.exports = router;
+export default router;
 
 /// SWITCHING TO SINGLE LOAN COLLECTION FOR REQUESTS/OFFERS OLD SEGREGATION APPROACH COMMENTED OUT
 // import {

@@ -1,13 +1,16 @@
 // Used from dotenv package to use env variables
 // MUST DEFINE MONGO_URI and PORT variables in a .env file in this server directory
-require('dotenv').config();
+import { config } from 'dotenv';
 
-const express = require('express');
-const cors = require('cors');
-const mongooseIndexImport = require('mongoose');
 
-const loanRoutes = require('./routes/loans');
+import * as express from 'express'; // syntax for importing in es6 if a library doesnt have default export
+import * as cors from 'cors';
+import mongooseIndexImport from 'mongoose';
 
+import loanRoutes from './routes/loans';
+
+// Need to run to apply dotenv variables I think
+config();
 // start up the express app
 const app = express();
 
