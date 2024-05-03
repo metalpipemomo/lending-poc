@@ -1,5 +1,5 @@
 // Mongoose enables devs to define schema for documents uploaded to the database. MongoDB is schemaless by default.
-const mongooseSessionImport = require('mongoose');
+import mongooseSessionImport from 'mongoose';
 
 const SessionSchema = mongooseSessionImport.Schema; // function to create a schema
 
@@ -17,4 +17,4 @@ const sessionSchema = new SessionSchema({
 
 // Creates a model based on schema to be used for interactions with DB collection of that name.
 // mongoose.model() params: Model name, mongoose schema, target DB collection name
-module.exports = mongooseLoanImport.model('Session', sessionSchema, 'sessions');
+export const Session = mongooseSessionImport.model('Session', sessionSchema, 'sessions');
