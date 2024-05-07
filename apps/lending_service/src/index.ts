@@ -3,8 +3,8 @@
 import { config } from 'dotenv';
 
 
-import * as express from 'express'; // syntax for importing in es6 if a library doesnt have default export
-import * as cors from 'cors';
+import express from 'express'; // syntax for importing in es6 if a library doesnt have default export
+import cors from 'cors';
 import mongooseIndexImport from 'mongoose';
 
 import loanRoutes from './routes/loans';
