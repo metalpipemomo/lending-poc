@@ -1,7 +1,7 @@
 // Mongoose enables devs to define schema for documents uploaded to the database. MongoDB is schemaless by default.
-import mongooseUserImport from 'mongoose';
+import mongoose from 'mongoose';
 
-const UserSchema = mongooseUserImport.Schema; // function to create a schema
+const UserSchema = mongoose.Schema; // function to create a schema
 
 // We can use it to make a schema to enforce like so.
 const userSchema = new UserSchema({
@@ -37,4 +37,4 @@ const userSchema = new UserSchema({
 
 // Creates a model based on schema to be used for interactions with DB collection of that name.
 // mongoose.model() params: Model name, mongoose schema, target DB collection name
-export const User = mongooseUserImport.model('User', userSchema, 'users');
+export default mongoose.model('User', userSchema, 'users');

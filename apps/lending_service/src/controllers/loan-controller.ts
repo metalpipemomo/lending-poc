@@ -1,5 +1,5 @@
 // Segregates db I/O logic from the routes and models 
-import { Loan } from '../models/loan-model';
+import Loan from '../models/loan-model';
 // May need to validate things later
 import mongoose from 'mongoose';
 import { ObjectId } from 'mongodb';

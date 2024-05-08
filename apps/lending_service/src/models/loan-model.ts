@@ -1,7 +1,7 @@
 // Mongoose enables devs to define schema for documents uploaded to the database. MongoDB is schemaless by default.
-import mongooseLoanImport from 'mongoose';
+import mongoose from 'mongoose';
 
-const LoanSchema = mongooseLoanImport.Schema; // function to create a schema
+const LoanSchema = mongoose.Schema; // function to create a schema
 
 // We can use it to make a schema to enforce like so.
 const loanSchema = new LoanSchema({
@@ -49,4 +49,4 @@ const loanSchema = new LoanSchema({
 
 // Creates a model based on schema to be used for interactions with DB collection of that name.
 // mongoose.model() params: Model name, mongoose schema, target DB collection name
-export const Loan = mongooseLoanImport.model('Loan', loanSchema, 'loans');
+export default mongoose.model('Loan', loanSchema, 'loans');
