@@ -1,5 +1,4 @@
 {
-  //"extends": "@repo/typescript-config/base.json",
   "compilerOptions": {
     "target": "ES6",
     "strict": true,
