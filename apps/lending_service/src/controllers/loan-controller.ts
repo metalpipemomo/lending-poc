@@ -3,13 +3,14 @@ import { Loan } from '../models/loan-model';
 // May need to validate things later
 import mongoose from 'mongoose';
 import { ObjectId } from 'mongodb';
+import { Request, Response } from "express";
 
 // ** REMEMBER WE ARE TREATING LOAN REQUESTS AND LOAN OFFERS AS THE SAME SCHEMA BUT WITH BOOLEAN TO DISTINGUISH
 // So both loan request/loan offer = loan data entry, we distinguish which one an entry is with the isLoan parameter
 // With this schema intended effect is we can compare data of separate entries to find matches based on that distinction.
 
 // CRUD operation to read all loan offers from DB
-export const getLoans = async (req, res) => {
+export const getLoans = async (req: Request, res: Response) => {
   // Check for errors or empty on response
   try{
     // Find method to select all data entries from collection on connected cluster for loan offers
@@ -30,7 +31,7 @@ export const getLoans = async (req, res) => {
 }
 
 // CRUD operation to read a single loan offer/requests info by ID
-export const getLoanById = async (req, res) => {
+export const getLoanById = async (req: Request, res: Response) => {
   // grab id from passed params which are in req.params
   const { id } = req.params;
 
@@ -54,7 +55,7 @@ export const getLoanById = async (req, res) => {
 }
 
 // CRUD operation to create a single loan offer/request
-export const createLoan = async (req, res) => {
+export const createLoan = async (req: Request, res: Response) => {
   // Get the data parameters entered by user from post request body
   const loanData = req.body;
 
@@ -73,7 +74,7 @@ export const createLoan = async (req, res) => {
 }
 
 // CRUD operation for updating a loan offer/request by ID
-export const updateLoan = async (req, res) => {
+export const updateLoan = async (req: Request, res: Response) => {
   // grab id from passed params which are in req.params
   const { id } = req.params;
   // Get the data parameters entered by user from patch request body
@@ -99,7 +100,7 @@ export const updateLoan = async (req, res) => {
 }
 
 //Define CRUD operation for deleting a loan offer/request by ID
-export const deleteLoan = async (req, res) => {
+export const deleteLoan = async (req: Request, res: Response) => {
   // grab id from passed params which are in req.params
   const { id } = req.params;
 

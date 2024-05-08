@@ -3,11 +3,12 @@
 import { config } from 'dotenv';
 
 
-import * as express from 'express'; // syntax for importing in es6 if a library doesnt have default export
-import * as cors from 'cors';
+import express from 'express'; // syntax for importing in es6 if a library doesnt have default export
+import cors from 'cors';
 import mongooseIndexImport from 'mongoose';
 
 import loanRoutes from './routes/loans';
+import { MongoClient } from 'mongodb';
 
 // Need to run to apply dotenv variables I think
 config();
@@ -32,15 +33,17 @@ app.use((req, res, next) => {
 // Grabs the diff routes on our router and uses them on the app at the specified endpoint, see routes folder
 app.use('/api/loan-service', loanRoutes);
 
-// Specify the DB to access
-const connectionOptions = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  dbName: 'Loans', // Specify the database name here in options
-}
+
+// I believe the first 2 connection options are deprecated
+// // Specify the DB to access
+// const connectionOptions = {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+//   dbName: 'Loans', // Specify the database name here in options
+// }
 
 // DB connection with connection string and use the options as second arg
-mongooseIndexImport.connect(process.env.MONGO_URI, connectionOptions) // async returns a promise so use .then to fire a method when complete and .catch method for errors
+mongooseIndexImport.connect(process.env.MONGO_URI!, { dbName: 'Loans' }) // async returns a promise so use .then to fire a method when complete and .catch method for errors
   .then(()=>{
     // Don't want to accept requests until we have connected, so put the listener here.
     // listen for requests on a certain port number
