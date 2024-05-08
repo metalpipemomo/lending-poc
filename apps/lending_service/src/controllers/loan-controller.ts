@@ -2,7 +2,6 @@
 import Loan from '../models/loan-model';
 // May need to validate things later
 import mongoose from 'mongoose';
-import { ObjectId } from 'mongodb';
 import { Request, Response } from "express";
 
 // ** REMEMBER WE ARE TREATING LOAN REQUESTS AND LOAN OFFERS AS THE SAME SCHEMA BUT WITH BOOLEAN TO DISTINGUISH
