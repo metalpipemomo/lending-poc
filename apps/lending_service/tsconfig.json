@@ -1,11 +1,15 @@
 {
-  //"extends": "@repo/typescript-config/base.json",
   "compilerOptions": {
-    "outDir": "./dist"
+    "target": "ES6",
+    "strict": true,
+    "esModuleInterop": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext"
   },
   "include": [
-    "**/*.ts",
-    "**/*.tsx",
+    "src/**/*",
   ],
   "exclude": ["node_modules"],
   "types": ["node"]
