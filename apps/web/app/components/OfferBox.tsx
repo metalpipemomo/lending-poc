@@ -24,7 +24,7 @@ const OfferBox = async () => {
   const offers: Offer[] = await res.json();
 
   return (
-    <div id="dashboard-offers-container" className="mt-2 size-fit">
+    <div id="dashboard-offers-container" className="mt-2 size-fit pl-1">
       {/* Display loaded items in a list on dashboard */}
       <ul id="dashboard-offers" className="flex flex-wrap gap-2">
         {/* Map all the loaded entries data into list items */}
