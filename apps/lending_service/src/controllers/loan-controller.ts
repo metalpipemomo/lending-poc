@@ -1,5 +1,5 @@
 // Segregates db I/O logic from the routes and models 
-import Loan from '../models/loan-model';
+import { LoanModel, Loan } from '@repo/models';
 // May need to validate things later
 import mongoose from 'mongoose';
 import { Request, Response } from "express";
@@ -13,7 +13,7 @@ export const getLoans = async (req: Request, res: Response) => {
   // Check for errors or empty on response
   try{
     // Find method to select all data entries from collection on connected cluster for loan offers
-    const offers = await Loan.find({}); // blank obj to get all
+    const offers = await LoanModel.find({}); // blank obj to get all
 
     // Check if response was empty
     if(offers.length === 0){
@@ -41,7 +41,7 @@ export const getLoanById = async (req: Request, res: Response) => {
 
   try{
     // Use Model.findByID to find unique entries
-    const loan = await Loan.findById(id); 
+    const loan = await LoanModel.findById(id); 
 
     if(!loan){
       return res.status(404).json({error: 'No such loan.'});
@@ -60,7 +60,7 @@ export const createLoan = async (req: Request, res: Response) => {
 
   try{
     // Make a new document entry using the Loan mongoose schema using the posted loanData
-    const newLoanEntry = new Loan(loanData); // newLoanEntry is the returned
+    const newLoanEntry = new LoanModel(loanData); // newLoanEntry is the returned
     // Asynchronously save the loanData to the mongoDB collection, returns the saved data entry with generated mongoID.
     const savedLoanEntry = await newLoanEntry.save();
 
@@ -85,7 +85,7 @@ export const updateLoan = async (req: Request, res: Response) => {
     // Use mongoose findByIdAndUpdate function
     // Params for function: (idToUpdate, updateData, options)
     // Returns updated document on DB if successful
-    const updatedLoanResult = await Loan.findByIdAndUpdate(id, dataToUpdate, options);
+    const updatedLoanResult = await LoanModel.findByIdAndUpdate(id, dataToUpdate, options);
 
     if(!updatedLoanResult){ // No loan entry found case
       console.log("No loan found by ID."); // Log detailed error for backend
@@ -106,7 +106,7 @@ export const deleteLoan = async (req: Request, res: Response) => {
   try{
     // Use mongoose findByIdAndDelete function
     // Returns deleted document from DB if successful
-    const deletedLoanEntry = await Loan.findByIdAndDelete(id);
+    const deletedLoanEntry = await LoanModel.findByIdAndDelete(id);
 
     if(!deletedLoanEntry){ // No loan entry found to delete
       console.log("No loan found by ID to delete.");
