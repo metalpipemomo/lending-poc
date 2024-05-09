@@ -8,6 +8,7 @@
     ]
   },
   "include": [
+    "./tailwind.config.js",
     "next-env.d.ts",
     "next.config.js",
     "**/*.ts",
