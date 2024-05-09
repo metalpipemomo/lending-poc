@@ -19,31 +19,58 @@ interface Offer{
 }
 
 // Fetch to post offer to endpoint
-async function postOffer(data: Offer): Promise<Response> {
-  const res = await fetch('http://localhost:4040/api/loan-service/offers/', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
-  });
+// async function postOffer(data: Offer): Promise<Response> {
+//   const res = await fetch('http://localhost:4040/api/loan-service/offers/', {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json'
+//     },
+//     body: JSON.stringify(data)
+//   });
 
-  if (!res.ok) {
-    throw new Error(`Error! Was not able to post offer: ${res.statusText}`);
-  } else{
-    console.log("SUCCESSFUL POST!")
-  }
-  return await res.json();
-}
+//   if (!res.ok) {
+//     throw new Error(`Error! Was not able to post offer: ${res.statusText}`);
+//   } else{
+//     console.log("SUCCESSFUL POST!")
+//   }
+//   return await res.json();
+// }
 
-const packageAndPost = () => {
+// const packageAndPost = () => {
   
-}
+// }
 
 
 
 const MakeNewOffer = () => {
-  
+//   const [formData, setFormData] = useState<Offer>({
+//     userId: '',
+//     loanAmount: '',
+//     interestRate: '',
+//     dueDate: '',
+//     dateOfIssue: '',
+//     loanTerm: '',
+//     numberOfInstallments: '',
+//     isLoan: '',
+//     riskLevel: '',
+//     expiryDate: '',
+// });
+
+//   const handleFormSubmit = (event: Event) => {
+//     event.preventDefault(); // Prevent form submission (optional)
+
+//     const form = event.target;
+//     const data = new FormData(form:);
+
+//     // Convert FormData to a JavaScript object
+//     const formDataObject = {};
+//     data.forEach((value, key) => {
+//         formDataObject[key] = value;
+//     });
+
+//     // Call your function with the form data object
+//     packageAndPost(formDataObject);
+// };
 
   return (
     <div>
@@ -70,7 +97,7 @@ const MakeNewOffer = () => {
           <label>expiryDate: </label>
           <div className=""><input type="text"></input></div>
         </div>
-        <div className=""><button className="float-right mt-2 border border-white bg-gray-700 p-1 text-white hover:bg-gray-800" onClick={packageAndPost}>Post Offer</button></div>
+        <div className=""><button className="float-right mt-2 border border-white bg-gray-700 p-1 text-white hover:bg-gray-800">Post Offer</button></div>
       </form>
     </div>
   )

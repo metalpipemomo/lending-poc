@@ -18,15 +18,17 @@ interface Offer{
 }
 
 // React component for an offer loaded from the DB. Displayed on dashboard.
-const OfferBox: React.FC<{ offers: Offer[] }>  = ({ offers }) => { // explicit type on OfferBox is inferred for the prop
+const OfferBox: React.FC<{ offers: Offer[] }>  = async ({  }) => { // explicit type on OfferBox is inferred for the prop
   // Handle no offers loaded yet case
-  if (!offers) {
-    return <div className="p-1">Loading...</div>;
-  } 
+
+  const res = await fetch('http://localhost:4040/api/loan-service/offers/');
+  const offers: Offer[] = await res.json();
 
   return (
     <div id="dashboard-offers-container" className="mt-2 size-fit pl-1">
       {/* Display loaded items in a list on dashboard */}
+      
+
       <ul id="dashboard-offers" className="flex flex-wrap gap-2">
         {/* Map all the loaded entries data into list items */}
         {offers.map(offer => 
@@ -53,22 +55,22 @@ export default OfferBox
 
 // Using getServerSideProps so fetch happens each time page loads.
 export async function getServerSideProps() {
-  console.log("getserver")
-  try {
-      const res = await fetch('http://localhost:4040/api/loan-service/offers/');
-      const offers: Offer[] = await res.json();
+  // console.log("getserver")
+  // try {
+  //     const res = await fetch('http://localhost:4040/api/loan-service/offers/');
+  //     const offers: Offer[] = await res.json();
 
-      return {
-          props: {
-              offers,
-          },
-      };
-  } catch (error) {
-      console.error('Error fetching Offers data:', error);
-      return {
-          props: {
-              offers: [],
-          },
-      };
-  }
+  //     return {
+  //         props: {
+  //             offers,
+  //         },
+  //     };
+  // } catch (error) {
+  //     console.error('Error fetching Offers data:', error);
+  //     return {
+  //         props: {
+  //             offers: [],
+  //         },
+  //     };
+  // }
 }
