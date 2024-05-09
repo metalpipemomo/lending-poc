@@ -10,7 +10,7 @@ const MainDashPage = () => {
     <div id="dashboard-container" className="">
       <div id="dashboard-header" className="flex">
         <h1 id="dashboard-header-title" className="p-1 text-3xl font-bold">Lending Service Dashboard</h1>
-        <Link href="/dashboard/create" id="dashboard-link-new-offer" className="place-self-end"><h2 className="my-1 w-fit border border-white bg-gray-700 p-1 text-white hover:bg-gray-800">Make a New Offer</h2></Link>
+        <Link href="/dashboard/create" id="dashboard-link-new-offer" className=" absolute right-1 place-self-end"><h2 className="my-1 w-fit border border-white bg-gray-700 p-1 text-white hover:bg-gray-800">Make a New Offer</h2></Link>
       </div>
       <OfferBox/>
     </div>

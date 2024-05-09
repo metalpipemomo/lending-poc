@@ -7,7 +7,7 @@ const LoanEntryPage = () => {
   return (
     <div id="offer-creation-container">
       <div id="dashboard-header" className="">
-        <h1 id="dashboard-header-title" className="font-bold text-xl">LoanEntryPage</h1>
+        <h1 id="dashboard-header-title" className="p-1 text-3xl font-bold">LoanEntryPage</h1>
       </div>
       <MakeNewOffer/>
     </div>

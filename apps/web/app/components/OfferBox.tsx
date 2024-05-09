@@ -18,10 +18,11 @@ interface Offer{
 }
 
 // React component for an offer loaded from the DB. Displayed on dashboard.
-const OfferBox = async () => {
-  // FETCH with local hosted backend api endpoint for now, will be a deployment URL in production
-  const res = await fetch('http://localhost:4040/api/loan-service/offers/');
-  const offers: Offer[] = await res.json();
+const OfferBox: React.FC<{ offers: Offer[] }>  = ({ offers }) => { // explicit type on OfferBox is inferred for the prop
+  // Handle no offers loaded yet case
+  if (!offers) {
+    return <div className="p-1">Loading...</div>;
+  } 
 
   return (
     <div id="dashboard-offers-container" className="mt-2 size-fit pl-1">
@@ -49,3 +50,25 @@ const OfferBox = async () => {
 }
 
 export default OfferBox
+
+// Using getServerSideProps so fetch happens each time page loads.
+export async function getServerSideProps() {
+  console.log("getserver")
+  try {
+      const res = await fetch('http://localhost:4040/api/loan-service/offers/');
+      const offers: Offer[] = await res.json();
+
+      return {
+          props: {
+              offers,
+          },
+      };
+  } catch (error) {
+      console.error('Error fetching Offers data:', error);
+      return {
+          props: {
+              offers: [],
+          },
+      };
+  }
+}

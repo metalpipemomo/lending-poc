@@ -2,7 +2,7 @@
 // Browser events like click and drag won't work unless it's client rendered
 // This is the NextJS directive that flags a component to be rendered on client
 'use client';
-import React from 'react'
+import React, { useState } from 'react';
 
 // Data structure for offer entered to DB.
 interface Offer{
@@ -36,41 +36,58 @@ async function postOffer(data: Offer): Promise<Response> {
   return await res.json();
 }
 
+const packageAndPost = () => {
+  
+}
+
 
 
 const MakeNewOffer = () => {
-  const exampleLoanData = {
-    userId: "userTestFromFrontEnd",
-    loanAmount: 4930,
-    interestRate: 2.0,
-    dueDate: "2025-04-22",
-    dateOfIssue: "2024-04-13",
-    loanTerm: 3,
-    numberOfInstallments: 1,
-    isLoan: true,
-    riskLevel: "low-risk",
-    expiryDate: "2024-09-09"
-  };
+  
 
   return (
     <div>
-      <form className="w-fit border border-white bg-gray-700 text-white hover:bg-gray-800 ">
-        <input type="text" name="test"></input>
-        <button className="bg-gray-700 p-1 text-white hover:bg-gray-800" onClick={()=>{console.log('Click'); postOffer({
-    userId: "userTestFromFrontEnd",
-    loanAmount: 4930,
-    interestRate: 2.0,
-    dueDate: new Date("2025-04-22"),
-    dateOfIssue: new Date("2024-04-13"),
-    loanTerm: 3,
-    numberOfInstallments: 1,
-    isLoan: true,
-    riskLevel: "low-risk",
-    expiryDate: new Date("2024-09-09")
-  });}}>Post Offer</button>
+      <form className="w-fit p-1 ">
+        <div className="flex w-fit flex-col gap-2.5 border border-white bg-gray-700 p-2 text-white ">
+          <label>userId: </label>
+          <div className=""><input type="text"></input></div>
+          <label>loanAmount: </label>
+          <div className=""><input type="text"></input></div>
+          <label>interestRate: </label>
+          <div className=""><input type="text"></input></div>
+          <label>dueDate: </label>
+          <div className=""><input type="text"></input></div>
+          <label>dateOfIssue: </label>
+          <div className=""><input type="text"></input></div>
+          <label>loanTerm: </label>
+          <div className=""><input type="text"></input></div>
+          <label>numberOfInstallments: </label>
+          <div className=""><input type="text"></input></div>
+          <label>isLoan: </label>
+          <div className=""><input type="text"></input></div>
+          <label>riskLevel: </label>
+          <div className=""><input type="text"></input></div>
+          <label>expiryDate: </label>
+          <div className=""><input type="text"></input></div>
+        </div>
+        <div className=""><button className="float-right mt-2 border border-white bg-gray-700 p-1 text-white hover:bg-gray-800" onClick={packageAndPost}>Post Offer</button></div>
       </form>
     </div>
   )
 }
 
 export default MakeNewOffer
+
+
+// const exampleLoanData = {
+//   userId: "userTestFromFrontEnd",
+//   loanAmount: 4930,
+//   interestRate: 2.0,
+//   dueDate: "2025-04-22",
+//   dateOfIssue: "2024-04-13",
+//   loanTerm: 3,
+//   numberOfInstallments: 1,
+//   isLoan: true,
+//   riskLevel: "low-risk",
+//   expiryDate: "2024-09-09"
+// };
