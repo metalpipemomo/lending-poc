@@ -25,14 +25,12 @@ const OfferBox = async () => {
 
   return (
     <div id="dashboard-offers-container" className="mt-2 size-fit">
-      <span>Fetch and load DB entries here on load, this should be server side rendered component since its just initial batch read and no interactive requirements</span>
-      <h1 className="mt-2">Loaded Offers: </h1>
       {/* Display loaded items in a list on dashboard */}
-      <ul id="dashboard-offers" className="border-collapse">
+      <ul id="dashboard-offers" className="flex flex-wrap gap-2">
         {/* Map all the loaded entries data into list items */}
         {offers.map(offer => 
-          <li key={offer._id.toString()} className="mb-2 w-fit border border-white bg-gray-700 p-1 text-white hover:bg-gray-800 ">
-            <h1 className="text-2xl font-bold">{offer.isLoan ? "Loan Offer" : "Borrow Offer"}</h1>
+          <li key={offer._id.toString()} className="mb-2 w-1/6 border border-white bg-gray-700 p-1 text-xs text-white hover:bg-gray-800">
+            <h1 className="text-xl font-bold">{offer.isLoan ? "Loan Offer" : "Borrow Offer"}</h1>
             <div><span className="font-bold">userId: </span>{offer.userId}</div>
             <div><span className="font-bold">loanAmount: </span>{offer.loanAmount.toString()}</div>
             <div><span className="font-bold">interestRate: </span>{offer.interestRate.toString()}</div>
