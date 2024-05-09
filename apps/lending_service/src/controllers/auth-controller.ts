@@ -3,7 +3,7 @@ import { promisify } from 'util';
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-import UserModel, { User } from '../models/user-model';
+import { UserModel, User } from '@repo/models';
 
 const scryptAsync = promisify(scrypt);
 
