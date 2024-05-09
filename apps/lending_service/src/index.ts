@@ -4,8 +4,13 @@ import "dotenv/config"
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
+import https from 'https';
+import fs from 'fs';
+import path from 'path';
 
 import loanRoutes from './routes/loans';
+import userRoutes from './routes/auth';
+import { AddressInfo } from "net";
 
 
 const app = express();
@@ -28,15 +33,22 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 // Loan route
 app.use('/api/loan-service', loanRoutes);
+app.use('/api/auth', userRoutes);
 
+const httpsOptions = {
+  key: fs.readFileSync(path.resolve(__dirname, '..', 'key.pem')),
+  cert: fs.readFileSync(path.resolve(__dirname, '..', 'cert.pem'))
+};
+
+const server = https.createServer(httpsOptions, app);
 
 // DB connection with connection string and use the options as second arg
 mongoose.connect(process.env.MONGO_URI!, { dbName: 'Loans' }) // async returns a promise so use .then to fire a method when complete and .catch method for errors
   .then(()=>{
     // Don't want to accept requests until we have connected, so put the listener here.
     // listen for requests on a certain port number
-    app.listen(port, () =>{
-      console.log("Express server is running and connected to MongoDB on port " + port);
+    server.listen(port, () =>{
+      console.log(`Server listening on https://localhost:${port}/`);
     });
   })
   .catch((error)=>{console.log(error)})
