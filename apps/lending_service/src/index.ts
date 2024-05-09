@@ -8,9 +8,10 @@ import https from 'https';
 import fs from 'fs';
 import path from 'path';
 
+import { AuthenticateRoutes } from "./controllers/auth-controller";
+
 import loanRoutes from './routes/loans';
 import userRoutes from './routes/auth';
-import { AddressInfo } from "net";
 
 
 const app = express();
@@ -29,11 +30,16 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
+app.use(AuthenticateRoutes);
+
 /** Set routes here */
 
 // Loan route
 app.use('/api/loan-service', loanRoutes);
 app.use('/api/auth', userRoutes);
+app.get('/', (req: Request, res: Response) => {
+  res.status(200).json({ message: "Hello World" });
+});
 
 const httpsOptions = {
   key: fs.readFileSync(path.resolve(__dirname, '..', 'key.pem')),

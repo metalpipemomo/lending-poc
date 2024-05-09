@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { SchemaToType, Mutable } from '../utils';
+import { SchemaToType, Mutable } from './utils';
 
 const UserSchema = mongoose.Schema; // function to create a schema
 
@@ -41,4 +41,4 @@ export type User = Mutable<SchemaToType<typeof schemaDefinition>>;
 
 // Creates a model based on schema to be used for interactions with DB collection of that name.
 // mongoose.model() params: Model name, mongoose schema, target DB collection name
-export default mongoose.model('User', userSchema, 'users');
+export const UserModel = mongoose.model('User', userSchema, 'users');

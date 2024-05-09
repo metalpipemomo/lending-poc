@@ -10,7 +10,7 @@
     "skipLibCheck": true
   },
   "include": [
-    "src/**/*",
+    "src/**/*", "../../packages/models/src/loan-model.ts",
   ],
   "exclude": ["node_modules"],
   "types": ["node"]

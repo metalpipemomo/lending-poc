@@ -1,9 +1,9 @@
 import { scrypt, randomBytes } from 'crypto';
 import { promisify } from 'util';
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-import UserModel, { User } from '../models/user-model';
+import { UserModel, User } from '@repo/models';
 
 const scryptAsync = promisify(scrypt);
 
@@ -109,5 +109,34 @@ export const Signup = async (req: Request, res: Response) => {
         return res.status(201).json({ message: 'User registered' });
     } catch (error) {
         return res.status(500).json({ error: 'Server error' });
+    }
+};
+
+export const AuthenticateRoutes = (req: Request, res: Response, next: NextFunction) => {
+    if (!req.path.startsWith('/api/auth')) {
+        const authHeader = req.headers.authorization;
+        const token = authHeader && authHeader.split(' ')[1];
+
+        if (!token) {
+            return res.status(401).json({ error: 'Access forbidden: Token not provided' });
+        }
+
+        if (!process.env.SECRET_KEY) {
+            return res.status(500).json({ error: 'Server error: .env variables not loaded properly' });
+        }
+
+        jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+            if (err) {
+                if (err.name === 'TokenExpiredError') {
+                    return res.status(401).json({ error: 'Token expired' });
+                } else {
+                    return res.status(403).json({ error: 'Invalid token' });
+                }
+            }
+
+            next();
+        });
+    } else {
+        next();
     }
 };
