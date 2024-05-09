@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 
 const LoanSchema = mongoose.Schema; // function to create a schema
 
+// TODO: Rename to offerSchema for consistency
 // We can use it to make a schema to enforce like so.
 const loanSchema = new LoanSchema({
   userId: { // Requesting user's ID
@@ -34,7 +35,7 @@ const loanSchema = new LoanSchema({
     required: true
   },
   isLoan: { // TRUE means this is a loan, meaning it is entered by a lender, FALSE meaning this is not a loan but a request from a borrower
-    type: String,
+    type: Boolean,
     required: true
   },
   riskLevel: { // "low-risk" "high-risk" "black-listed" 

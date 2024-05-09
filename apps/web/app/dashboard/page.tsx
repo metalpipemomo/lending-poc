@@ -8,10 +8,10 @@ import '../../public/styles/tailwind.css';
 const MainDashPage = () => {
   return (
     <div id="dashboard-container" className="">
-      <div id="dashboard-header" className="">
-        <h1 id="dashboard-header-title" className="font-bold text-xl">Lending Service Dashboard</h1>
+      <div id="dashboard-header" className="flex border-b-2 border-white">
+        <h1 id="dashboard-header-title" className=" p-1 text-3xl font-bold">Lending Service Dashboard</h1>
+        <Link href="/dashboard/create" id="dashboard-link-new-offer" className="place-self-end"><h2 className="my-1 w-fit bg-white p-1 text-black">Make a New Offer</h2></Link>
       </div>
-      <Link href="/dashboard/create" id="dashboard-link-new-offer"><h2 className="my-1 w-fit bg-white p-1 text-black">Make a New Offer</h2></Link>
       <OfferBox/>
     </div>
   )

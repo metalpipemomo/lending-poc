@@ -5,8 +5,10 @@ import MakeNewOffer from '../../components/MakeNewOffer'
 // TODO: Should this be a drop down on the dashboard instead of a separate routed page??
 const LoanEntryPage = () => {
   return (
-    <div>
-      <h1>LoanEntryPage</h1><br/>
+    <div id="offer-creation-container">
+      <div id="dashboard-header" className="">
+        <h1 id="dashboard-header-title" className="font-bold text-xl">LoanEntryPage</h1>
+      </div>
       <MakeNewOffer/>
     </div>
   )
