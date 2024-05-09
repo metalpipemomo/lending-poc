@@ -2,21 +2,20 @@
 // Browser events like click and drag won't work unless it's client rendered
 // This is the NextJS directive that flags a component to be rendered on client
 'use client';
-import React, { useState } from 'react';
 
 // Data structure for offer entered to DB.
-interface Offer{
-  userId: String,
-  loanAmount: Number,
-  interestRate: Number,
-  dueDate: Date,
-  dateOfIssue: Date,
-  loanTerm: Number,
-  numberOfInstallments: Number,
-  isLoan: Boolean,
-  riskLevel: String,
-  expiryDate: Date
-}
+// interface Offer{
+//   userId: String,
+//   loanAmount: Number,
+//   interestRate: Number,
+//   dueDate: Date,
+//   dateOfIssue: Date,
+//   loanTerm: Number,
+//   numberOfInstallments: Number,
+//   isLoan: Boolean,
+//   riskLevel: String,
+//   expiryDate: Date
+// }
 
 // Fetch to post offer to endpoint
 // async function postOffer(data: Offer): Promise<Response> {

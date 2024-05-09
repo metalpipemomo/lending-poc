@@ -18,7 +18,7 @@ interface Offer{
 }
 
 // React component for an offer loaded from the DB. Displayed on dashboard.
-const OfferBox: React.FC<{ offers: Offer[] }>  = async ({  }) => { // explicit type on OfferBox is inferred for the prop
+const OfferBox: React.FC  = async () => { // explicit type on OfferBox is inferred for the prop
   // Handle no offers loaded yet case
 
   const res = await fetch('http://localhost:4040/api/loan-service/offers/');
