@@ -13,6 +13,15 @@ import { AuthenticateRoutes } from "./controllers/auth-controller";
 import loanRoutes from './routes/loans';
 import userRoutes from './routes/auth';
 
+declare global {
+  namespace Express {
+      interface Request {
+          user?: {
+              id: string
+          };
+      }
+  }
+}
 
 const app = express();
 const port = process.env.PORT || 4041;
@@ -37,8 +46,11 @@ app.use(AuthenticateRoutes);
 // Loan route
 app.use('/api/loan-service', loanRoutes);
 app.use('/api/auth', userRoutes);
+
+// Made this to test auth middleware
 app.get('/', (req: Request, res: Response) => {
   res.status(200).json({ message: "Hello World" });
+  console.log(req.user?.id);
 });
 
 const httpsOptions = {

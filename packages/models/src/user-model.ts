@@ -4,7 +4,15 @@ import { SchemaToType, Mutable } from './utils';
 const UserSchema = mongoose.Schema; // function to create a schema
 
 const schemaDefinition = {
-  name: {
+  id: {
+    type: "String",
+    required: true
+  },
+  firstName: {
+    type: "String",
+    required: true
+  },
+  lastName: {
     type: "String",
     required: true
   },
@@ -16,11 +24,31 @@ const schemaDefinition = {
     type: "String",
     required: true
   },
+  countryCode: {
+    type: "String",
+    required: true
+  },
   phoneNumber: {
     type: "String",
     required: true
   },
-  address: {
+  province: {
+    type: "String",
+    required: true
+  },
+  streetAddress: {
+    type: "String",
+    required: true
+  },
+  postalCode: {
+    type: "String",
+    required: true
+  },
+  country: {
+    type: "String",
+    required: true
+  },
+  city: {
     type: "String",
     required: true
   },
@@ -28,9 +56,9 @@ const schemaDefinition = {
     type: "Number",
     required: true
   },
-  createdLoans: {
-    type: "Array",
-    required: false
+  role: {
+    type: "String",
+    required: true
   }
 } as const;
 
