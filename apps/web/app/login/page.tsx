@@ -28,7 +28,7 @@ export default function LoginPage() {
     const { phoneNumber, country, password } = getValues();
     api?.post("/auth/login-phone", {
       countryCode: parsePhoneNumber(phoneNumber)?.country,
-      phoneNumber: phoneNumber,
+      phoneNumber: parsePhoneNumber(phoneNumber)?.nationalNumber,
       password: password
     })
     .then((e) => {
