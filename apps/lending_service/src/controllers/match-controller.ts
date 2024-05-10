@@ -37,6 +37,28 @@ export const getMatchById = async (req: Request, res: Response) => {
 export const createMatch = async (req: Request, res: Response) => {
     const match = req.body;
     try {
+        ////Advanced creation functionalities to check the offer and the user created the offer,
+        ////then assigning loanerId and borrowerId to the match entry:
+        //const { offerId, userId } = req.params;
+        //// make sure id is valid mongoose type id
+        //if(!mongoose.Types.ObjectId.isValid(id)){
+        //  return res.status(404).json({error: 'No such loan, invalid ID.'});
+        //}
+        //const loan = await Loan.findById(id); 
+        //let loanerId: string;
+        //let borrowerId: string;
+        //if (isLoan === 'True') {
+        //    loanerId = userId;
+        //    borrowerId = matchData.userId;
+        //} else {
+        //    loanerId = matchData.userId;
+        //    borrowerId = userId;
+        //}
+//
+        //// Set loanerId and borrowerId in the matchData
+        //matchData.loanerId = loanerId;
+        //matchData.borrowerId = borrowerId;
+
         const newMatchEntry = new Match(match);
         const savedMatch = await newMatchEntry.save();
         return res.status(201).json(savedMatch);
