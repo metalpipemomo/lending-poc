@@ -1,0 +1,13 @@
+{
+  "name": "@repo/models",
+  "version": "1.0.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "commonjs",
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "mongoose": "^8.3.4"
+  }
+}
