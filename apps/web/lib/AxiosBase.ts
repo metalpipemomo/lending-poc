@@ -10,7 +10,7 @@ export default function useAxios(): AxiosInstance | null {
         // Create Axios instance if not already created
         if (!axiosInstance) {
             axiosInstance = axios.create({
-                baseURL: 'http://our-url.com',
+                baseURL: 'http://localhost:4040/api/',
                 headers: {
                     'Content-Type': 'application/json'
                 }

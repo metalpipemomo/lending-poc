@@ -58,14 +58,14 @@ const httpsOptions = {
   cert: fs.readFileSync(path.resolve(__dirname, '..', 'cert.pem'))
 };
 
-const server = https.createServer(httpsOptions, app);
+// const server = https.createServer(httpsOptions, app);
 
 // DB connection with connection string and use the options as second arg
 mongoose.connect(process.env.MONGO_URI!, { dbName: 'Loans' }) // async returns a promise so use .then to fire a method when complete and .catch method for errors
   .then(()=>{
     // Don't want to accept requests until we have connected, so put the listener here.
     // listen for requests on a certain port number
-    server.listen(port, () =>{
+    app.listen(port, () =>{
       console.log(`Server listening on https://localhost:${port}/`);
     });
   })
