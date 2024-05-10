@@ -1,12 +1,12 @@
 "use strict";
 import { Request, Response } from "express";
-import { Match } from "../models/match-model";
+import { MatchModel, Match } from '@repo/models';
 import mongoose from "mongoose";
 
 // Function to get all matches
 export const getAllMatches = async (req: Request, res: Response) => {
     try {
-        const matches = await Match.find({});
+        const matches = await MatchModel.find({});
         if (matches.length === 0) {
             return res.status(404).send('No matches found.');
         }
@@ -23,7 +23,7 @@ export const getMatchById = async (req: Request, res: Response) => {
         return res.status(404).json({ error: 'No such match, invalid ID.' });
     }
     try {
-        const match = await Match.findById(id);
+        const match = await MatchModel.findById(id);
         if (!match) {
             return res.status(404).json({ error: 'No such match.' });
         }
@@ -59,7 +59,7 @@ export const createMatch = async (req: Request, res: Response) => {
         //matchData.loanerId = loanerId;
         //matchData.borrowerId = borrowerId;
 
-        const newMatchEntry = new Match(match);
+        const newMatchEntry = new MatchModel(match);
         const savedMatch = await newMatchEntry.save();
         return res.status(201).json(savedMatch);
     } catch (error) {
@@ -77,7 +77,7 @@ export const patchMatch = async (req: Request, res: Response) => {
         return res.status(404).json({ error: 'No such match, invalid ID.' });
     }
     try {
-        const updatedMatch = await Match.findByIdAndUpdate(id, status , { new: true });
+        const updatedMatch = await MatchModel.findByIdAndUpdate(id, status , { new: true });
         if (!updatedMatch) {
             return res.status(404).json({ error: 'No match found by that ID to update.' });
         }
@@ -94,7 +94,7 @@ export const deleteMatch = async (req: Request, res: Response) => {
         return res.status(404).json({ error: 'No such match, invalid ID.' });
     }
     try {
-        const deletedMatch = await Match.findByIdAndDelete(id);
+        const deletedMatch = await MatchModel.findByIdAndDelete(id);
         if (!deletedMatch) {
             return res.status(404).json({ error: 'No match found by that ID to delete.' });
         }
