@@ -13,7 +13,11 @@ const schemaDefinition = {
     type: "String",
     required: true
   },
-  offerId:{ // Id of the loan offer in db
+  loanId:{ // Id of the loan offer in db
+    type: "String",
+    required: true
+  },
+  borrowId:{ // Id of the loan offer in db
     type: "String",
     required: true
   },
