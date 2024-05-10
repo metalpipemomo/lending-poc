@@ -1,10 +1,11 @@
 "use client";
 import React, { useState } from "react";
 import ClientOnly from "../components/ClientOnly"
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import Link from "next/link";
-
-
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import PhoneInput, { parsePhoneNumber } from 'react-phone-number-input'
+import 'react-phone-number-input/style.css'
+import Axios from "../../lib/AxiosBase";
 
 export default function LoginPage() {
   const formDefaultState = {
@@ -21,8 +22,27 @@ export default function LoginPage() {
     getValues,
   } = useForm<FieldValues>({ defaultValues: formDefaultState, mode: "onBlur" });
   const [errorMsg, SetErrorMsg] = useState<any>(null);
+  const [value, setValue] = useState<any>()
+  const api = Axios()
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-  }
+    const { phoneNumber, country, password } = getValues();
+    api?.post("/auth/login-phone", {
+      countryCode: parsePhoneNumber(phoneNumber)?.country,
+      phoneNumber: phoneNumber,
+      password: password
+    })
+    .then((e) => {
+      console.log(e)
+
+    })
+    .catch((e) => {
+      console.log(e)
+    })
+
+    // console.log('Phone Number:', parsePhoneNumber(phoneNumber)?.nationalNumber);
+    // console.log('Country Code:', parsePhoneNumber(phoneNumber)?.country);
+    // console.log('Password:', password);
+  };
   return (
     <ClientOnly>
       <div className="relative overflow-hidden ">
@@ -44,21 +64,22 @@ export default function LoginPage() {
               <form className="space-y-3" onSubmit={handleSubmit(onSubmit)}>
                 <div>
                   <div className="mt-3">
-                    <input
-                      {...register("phoneNumber", {
-                        required: "Phone number is required",
+                    <PhoneInput
+                      {...register('phoneNumber', {
+                        required: 'Phone number is required',
                         minLength: {
-                          value: 10,
-                          message: "Phone number must be 10 digits",
+                          value: 15,
+                          message: 'Phone number must be 10 digits',
                         },
                         maxLength: {
-                          value: 10,
-                          message: "Phone number must be 10 digits",
+                          value: 15,
+                          message: 'Phone number must be 10 digits',
                         },
                       })}
-                      type="tel"
-                      placeholder="Phone number"
-                      className="block w-full rounded-md border py-3 text-center bg-white text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6"
+                      placeholder="Enter phone number"
+                      value={value}
+                      onChange={setValue}
+                      className="block w-full rounded-md border py-3 text-center bg-white text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
                     />
                     {errors.phoneNumber && (
                       <p className="text-red-500 text-sm">{`${errors.phoneNumber.message}`}</p>
@@ -77,7 +98,7 @@ export default function LoginPage() {
                       })}
                       type="password"
                       placeholder="Password"
-                      className="block w-full rounded-md border py-3 text-center bg-white text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6"
+                      className="block w-full rounded-md border py-3 text-center bg-white text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
                     />
                     {errors.password && (
                       <p className="text-red-500 text-sm">{`${errors.password.message}`}</p>
@@ -91,7 +112,7 @@ export default function LoginPage() {
                     disabled={isSubmitting}
                     className={`w-9/12 py-3 text-sm font-semibold rounded-full shadow-sm ${errors.phoneNumber
                       ? "bg-gray-200 text-gray-400"
-                      : "bg-imprint-blue text-white hover:opacity-95 focus:outline-none focus:ring-2"
+                      : "bg-black text-white hover:opacity-95 focus:outline-none focus:ring-2"
                       } `}
                   >
                     Log in
