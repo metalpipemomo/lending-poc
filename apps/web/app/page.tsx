@@ -1,7 +1,10 @@
+import ClientOnly from "./components/ClientOnly"
+import LoginPage from "./login/page";
 
-
-export default function Home() {
-    return (
-        <div className={'text-teal-500'}>hiiii</div>
-    )
+export default function LandingPage() {
+  return (
+    <ClientOnly>
+      <LoginPage />
+    </ClientOnly>
+  );
 }
