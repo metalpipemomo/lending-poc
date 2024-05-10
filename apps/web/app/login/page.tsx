@@ -79,7 +79,7 @@ export default function LoginPage() {
                       placeholder="Enter phone number"
                       value={value}
                       onChange={setValue}
-                      className="block w-full rounded-md border py-3 text-center bg-white text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
+                      className="PhoneInput block w-full rounded-md border py-3 bg-white text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 [&>div]:pl-5 [&>input]:outline-none [&>input]:indent-10"
                     />
                     {errors.phoneNumber && (
                       <p className="text-red-500 text-sm">{`${errors.phoneNumber.message}`}</p>
@@ -98,7 +98,7 @@ export default function LoginPage() {
                       })}
                       type="password"
                       placeholder="Password"
-                      className="block w-full rounded-md border py-3 text-center bg-white text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
+                      className="block w-full rounded-md border py-3 indent-32 bg-white text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
                     />
                     {errors.password && (
                       <p className="text-red-500 text-sm">{`${errors.password.message}`}</p>
