@@ -1,5 +1,5 @@
 // IMPORTS
-import * as express from 'express';
+import express from 'express';
 const router = express.Router();
 
 // Importing DB IO methods from controller:
