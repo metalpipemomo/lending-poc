@@ -3,11 +3,12 @@
 import { config } from 'dotenv';
 
 
-import * as express from 'express'; // syntax for importing in es6 if a library doesnt have default export
+import express from 'express'; // syntax for importing in es6 if a library doesnt have default export
 import * as cors from 'cors';
 import mongooseIndexImport from 'mongoose';
 
 import loanRoutes from './routes/loans';
+import matchRoutes from './routes/matches';
 
 // Need to run to apply dotenv variables I think
 config();
@@ -31,6 +32,7 @@ app.use((req, res, next) => {
 
 // Grabs the diff routes on our router and uses them on the app at the specified endpoint, see routes folder
 app.use('/api/loan-service', loanRoutes);
+app.use('/api/loan-service', matchRoutes);
 
 // Specify the DB to access
 const connectionOptions = {
