@@ -12,7 +12,7 @@ export default function useAxios(): AxiosInstance | null {
             axiosInstance = axios.create({
                 baseURL: 'http://localhost:4040/api/',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 }
             });
 

@@ -10,13 +10,16 @@
   },
   "dependencies": {
     "@repo/ui": "*",
+    "@tanstack/react-form": "^0.19.5",
     "@tanstack/react-query": "^5.32.1",
+    "@tanstack/zod-form-adapter": "^0.19.5",
     "axios": "^1.6.8",
     "next": "^14.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.51.4",
-    "react-phone-number-input": "^3.4.1"
+    "react-phone-number-input": "^3.4.1",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^14.1.1",
