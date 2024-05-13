@@ -3,44 +3,23 @@
 // This is the NextJS directive that flags a component to be rendered on client
 'use client';
 import { useState, useEffect } from 'react';
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+// Updating to use axios as rest of team using to streamline api calls and handling of promises.
+import Axios from "../../lib/AxiosBase";
 
-// Data structure for offer entered to DB.
-// interface Offer{
-//   userId: String,
-//   loanAmount: Number,
-//   interestRate: Number,
-//   dueDate: Date,
-//   dateOfIssue: Date,
-//   loanTerm: Number,
-//   numberOfInstallments: Number,
-//   isLoan: Boolean,
-//   riskLevel: String,
-//   expiryDate: Date
-// }
-
-// Fetch to post offer to endpoint
-// async function postOffer(data: Offer): Promise<Response> {
-//   const res = await fetch('http://localhost:4040/api/loan-service/offers/', {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json'
-//     },
-//     body: JSON.stringify(data)
-//   });
-
-//   if (!res.ok) {
-//     throw new Error(`Error! Was not able to post offer: ${res.statusText}`);
-//   } else{
-//     console.log("SUCCESSFUL POST!")
-//   }
-//   return await res.json();
-// }
-
-// const packageAndPost = () => {
-  
-// }
-
-
+// Data structure for offer entered to DB which is mix of user inputted fields and computer generated fields
+interface Offer{
+  userId: String,
+  loanAmount: Number,
+  interestRate: Number,
+  dueDate: Date,
+  dateOfIssue: Date, // Generated
+  loanTerm: Number,
+  numberOfInstallments: Number,
+  isLoan: Boolean, // Set by boolean
+  riskLevel: String, // Generated for borrowing case, set by input for lending case
+  expiryDate: Date
+}
 
 const MakeNewOffer = () => {
 //   const [formData, setFormData] = useState<Offer>({
@@ -56,23 +35,102 @@ const MakeNewOffer = () => {
 //     expiryDate: '',
 // });
 
-//   const handleFormSubmit = (event: Event) => {
-//     event.preventDefault(); // Prevent form submission (optional)
 
-//     const form = event.target;
-//     const data = new FormData(form:);
-
-//     // Convert FormData to a JavaScript object
-//     const formDataObject = {};
-//     data.forEach((value, key) => {
-//         formDataObject[key] = value;
-//     });
-
-//     // Call your function with the form data object
-//     packageAndPost(formDataObject);
-// };
+  // Component state
   const [isLoan, setIsLoan] = useState(true);
   const [detailsReady, setDetailsReady] = useState(false);
+  const api = Axios(); // used to make api calls
+
+  // Default state of form for reset should be same as offer schema except for fields that are generated seperate from user's input
+  const formDefaultState = {
+    defaultValues: {
+      loanAmount: "",
+      interestRate: "",
+      dueDate: "",
+      loanTerm: "",
+      numberOfInstallments: "",
+      riskLevel: "", // This wont be there in isLoad case, do I need two default states and two forms or can I just hide and nullify some fields.
+      expiryDate: "",
+    },
+  };
+
+  /// Helpers for manipulating input dom based on input status from react-hook-form package
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+    // Optimized helper for reading form values from react-hook-form package
+    getValues,
+  } = useForm<FieldValues>({ defaultValues: formDefaultState, mode: "onBlur" });
+
+  // Placeholder for now, later this will be determined by the services coded by Jingshi/Marko
+  // Randomly assigns a risk level or uses the passed risk level to assign to a borrowing user's offer
+  const setRiskLevel = ({ desiredRisk }: { desiredRisk: string }) => {
+    if(desiredRisk === "random"){
+      const riskLevels = ["black-listed", "low-risk", "high-risk"];
+      const randomIndex = Math.floor(Math.random() * riskLevels.length);
+      return riskLevels[randomIndex];
+    } else return desiredRisk;
+  }
+
+  // Handler for form submission
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    // Consts pulled from form to be following offer data schema and default form state
+    const {loanAmount, interestRate, dueDate, loanTerm, numberOfInstallments, riskLevel, expiryDate} = getValues();
+    // TODO: Still need to add the non input fields that are generated in the post request
+    // For borrows: add issue date and need to add riskLevel based on risk assessment code 
+    // For loans: need to add the issue date
+
+    // Distinguish what type of offer this is and generate non-inputted fields to complete post data obj
+    if(isLoan){
+      const postData = {
+        loanAmount: loanAmount,
+        interestRate: interestRate,
+        dueDate: dueDate,
+        dateOfIssue: new Date(), // added by computer
+        loanTerm: loanTerm,
+        numberOfInstallments: numberOfInstallments,
+        riskLevel: riskLevel, // use inputted risk string in a lending loan offer case
+        expiryDate: expiryDate
+      } 
+    } else{
+      const postData = {
+        loanAmount: loanAmount,
+        interestRate: interestRate,
+        dueDate: dueDate,
+        dateOfIssue: new Date(),
+        loanTerm: loanTerm,
+        numberOfInstallments: numberOfInstallments,
+        riskLevel: setRiskLevel({ desiredRisk: "random" }), // use generated risk string in borrow offer case -> for now using dummy method instead of a risk service
+        expiryDate: expiryDate
+      } 
+    }
+
+    api?.post("loan-service/offers/", {
+      loanAmount: loanAmount,
+      interestRate: interestRate,
+      dueDate: dueDate,
+      loanTerm: loanTerm,
+      numberOfInstallments: numberOfInstallments,
+      riskLevel: riskLevel,
+      expiryDate: expiryDate
+    })
+    .then((e) => {
+      console.log(e)
+    })
+    .catch((e) => {
+      console.log(e)
+    })
+  };
+
+  useEffect(()=>{
+    // Check if inputted data is ready -> can do with the axios field methods and error handling/constraints 
+    // TODO: Make this check dependant on error handling once inputs are updated to handle errors/constraints
+    if(true){
+
+    }
+  }, []);
 
   // TODO: reorder tailwind classes for TS standards
   // Handle case differences for borrow offer and loan offer -> eg posting a borrow does not need risk inputted as it's calculated later on separate service.
@@ -96,7 +154,7 @@ const MakeNewOffer = () => {
         </div>
         {/* Form container wrapper */}
         <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-sm"> 
-          <form className="w-fit  space-y-3 p-1" onSubmit={()=>{}}>
+          <form className="space-y-3" onSubmit={()=>{}}>
             {/* TOGGLE TYPE BUTTON */}
             {/* <div className="flex items-center justify-center mt-2">
               <button
@@ -211,12 +269,48 @@ const MakeNewOffer = () => {
       </div>
     </div>
     </>
-    
   )
 }
 
 export default MakeNewOffer
 
+// Fetch to post offer to endpoint -> probably can another way
+// async function postOffer(data: Offer): Promise<Response> {
+//   const res = await fetch('http://localhost:4040/api/loan-service/offers/', {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json'
+//     },
+//     body: JSON.stringify(data)
+//   });
+
+//   if (!res.ok) {
+//     throw new Error(`Error! Was not able to post offer: ${res.statusText}`);
+//   } else{
+//     console.log("SUCCESSFUL POST!")
+//   }
+//   return await res.json();
+// }
+
+//   const handleFormSubmit = (event: Event) => {
+//     event.preventDefault(); // Prevent form submission (optional)
+
+//     const form = event.target;
+//     const data = new FormData(form:);
+
+//     // Convert FormData to a JavaScript object
+//     const formDataObject = {};
+//     data.forEach((value, key) => {
+//         formDataObject[key] = value;
+//     });
+
+//     // Call your function with the form data object
+//     packageAndPost(formDataObject);
+// };
+
+// const packageAndPost = () => {
+  
+// }
 
 // const exampleLoanData = {
 //   userId: "userTestFromFrontEnd",
