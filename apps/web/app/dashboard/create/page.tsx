@@ -1,6 +1,8 @@
 // TSX for creating loan borrows and offers
-import React from 'react'
-import MakeNewOffer from '../../components/MakeNewOffer'
+import React from 'react';
+import MakeNewOffer from '../../components/MakeNewOffer';
+// Something wrong with my tailwind file location it has to be imported in each tsx file, ask mo how he used it on his branch
+import '../../../public/styles/tailwind.css';
 
 // TODO: Should this be a drop down on the dashboard instead of a separate routed page??
 const LoanEntryPage = () => {
