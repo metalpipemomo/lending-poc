@@ -53,10 +53,10 @@ app.get('/', (req: Request, res: Response) => {
   console.log(req.user?.id);
 });
 
-const httpsOptions = {
-  key: fs.readFileSync(path.resolve(__dirname, '..', 'key.pem')),
-  cert: fs.readFileSync(path.resolve(__dirname, '..', 'cert.pem'))
-};
+// const httpsOptions = {
+//   key: fs.readFileSync(path.resolve(__dirname, '..', 'key.pem')),
+//   cert: fs.readFileSync(path.resolve(__dirname, '..', 'cert.pem'))
+// };
 
 // const server = https.createServer(httpsOptions, app);
 
