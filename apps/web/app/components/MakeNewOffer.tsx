@@ -64,22 +64,6 @@ const MakeNewOffer = () => {
     getValues,
   } = useForm<FieldValues>({ defaultValues: formDefaultState, mode: "onBlur" });
 
-  // Placeholder for now, later this will be determined by the services coded by Jingshi/Marko
-  // Randomly assigns a risk level or uses the passed risk level to assign to a borrowing user's offer
-  const setRiskLevel = ({ desiredRisk }: { desiredRisk: string }) => {
-    if(desiredRisk === "random"){
-      const riskLevels = ["black-listed", "low-risk", "high-risk"];
-      const randomIndex = Math.floor(Math.random() * riskLevels.length);
-      return riskLevels[randomIndex];
-    } else return desiredRisk;
-  }
-
-  // Toggle fields for borrow/lend offers by setting isLoan boolean
-  const handleToggle = () => {
-    setIsLoan(!isLoan);
-    // Anything else we need to do
-  }
-
   // Handler for form submission
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     // Consts pulled from form to be following offer data schema and default form state
@@ -130,6 +114,22 @@ const MakeNewOffer = () => {
     })
   };
 
+  // Placeholder for now, later this will be determined by the services coded by Jingshi/Marko
+  // Randomly assigns a risk level or uses the passed risk level to assign to a borrowing user's offer
+  const setRiskLevel = ({ desiredRisk }: { desiredRisk: string }) => {
+    if(desiredRisk === "random"){
+      const riskLevels = ["black-listed", "low-risk", "high-risk"];
+      const randomIndex = Math.floor(Math.random() * riskLevels.length);
+      return riskLevels[randomIndex];
+    } else return desiredRisk;
+  }
+
+  // Toggle fields for borrow/lend offers by setting isLoan boolean
+  const handleToggle = () => {
+    setIsLoan(!isLoan);
+    // Anything else we need to do
+  }
+
   useEffect(()=>{
     // Check if inputted data is ready -> can do with the axios field methods and error handling/constraints 
     // TODO: Make this check dependant on error handling once inputs are updated to handle errors/constraints
@@ -160,7 +160,7 @@ const MakeNewOffer = () => {
         </div>
         {/* Form container wrapper */}
         <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-md"> 
-          <form className="space-y-3" onSubmit={()=>{}}>
+          <form className="space-y-3" onSubmit={handleSubmit(onSubmit)}>
             {/* TOGGLE TYPE BUTTON */}
             {/* <div className="flex items-center justify-center mt-2">
               <button
@@ -177,14 +177,14 @@ const MakeNewOffer = () => {
                 {/* LOAN AMOUNT INPUT DIV  */}
                 <div className="my-4">
                   <input
-                    // TODO: Will read into input params and configure for error handling next
-                    // {...register("password", {
-                    //   required: "Password is required",
-                    //   minLength: {
-                    //     value: 8,
-                    //     message: "Password must be at least 8 characters",
-                    //   },
-                    // })}
+                    //TODO: Will read into input params and configure for error handling next
+                    {...register("loanAmount", {
+                      required: "Loan amount is required",
+                      minLength: {
+                        value: 2,
+                        message: "Must choose a larger amount",
+                      },
+                    })}
                     type="text"
                     placeholder="Loan amount"
                     className="block w-full rounded-md border py-3 text-center bg-white text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
