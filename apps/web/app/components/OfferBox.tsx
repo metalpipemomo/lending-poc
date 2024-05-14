@@ -5,7 +5,7 @@ import React from 'react'
 import { ObjectId } from 'mongodb';
 // Since client rendered we will use the react state hooks
 import { useState, useEffect } from 'react';
-//import Axios from "../../lib/AxiosBase"; // for api calls
+import Axios from "../../lib/AxiosBase"; // for api calls
 
 // Define an interface for explicit TS type definition according to schema
 interface Offer{
@@ -25,7 +25,7 @@ interface Offer{
 // React component for an offer loaded from the DB. Displayed on dashboard.
 const OfferBox: React.FC  = () => { // explicit type on OfferBox is inferred for the prop
   const [offers, setOffers] = useState<Offer[]>([]);
-  //const api = Axios(); // Note have to do this outside of conditional code blocks and hooks -> HAVING ISSUES WITH REQUESTS NOT GOING OVER NETWORK USING AXIOS
+  const api = Axios(); // Note have to do this outside of conditional code blocks and hooks -> HAVING ISSUES WITH REQUESTS NOT GOING OVER NETWORK USING AXIOS
 
   // Want to fetch and render in a useEffect hook
   useEffect(()=>{
