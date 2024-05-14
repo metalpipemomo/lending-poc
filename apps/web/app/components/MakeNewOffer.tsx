@@ -2,10 +2,12 @@
 // Browser events like click and drag won't work unless it's client rendered
 // This is the NextJS directive that flags a component to be rendered on client
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { DevTool } from "@hookform/devtools";
 // Updating to use axios as rest of team using to streamline api calls and handling of promises.
 import Axios from "../../lib/AxiosBase";
+import { DefaultFormValues } from 'react-phone-number-input/react-hook-form';
 
 // Data structure for offer entered to DB which is mix of user inputted fields and computer generated fields
 interface Offer{
@@ -41,6 +43,10 @@ const MakeNewOffer = () => {
   const [detailsReady, setDetailsReady] = useState(false);
   const api = Axios(); // used to make api calls
 
+  // For customizing date inputs a bit
+  const expiryDateRef = useRef<HTMLInputElement>(null);
+  const dueDateRef = useRef<HTMLInputElement>(null);
+
   // Default state of form for reset should be same as offer schema except for fields that are generated seperate from user's input
   const formDefaultState = {
     defaultValues: {
@@ -56,62 +62,65 @@ const MakeNewOffer = () => {
 
   /// Helpers for manipulating input dom based on input status from react-hook-form package
   const {
-    register,
-    handleSubmit,
+    register, // used to register inputs as controls to be tracked by formState of react-hook-form
+    handleSubmit, // used to pass an intended submit handling function the form state
     formState: { errors, isSubmitting },
     reset,
     // Optimized helper for reading form values from react-hook-form package
     getValues,
+    control
   } = useForm<FieldValues>({ defaultValues: formDefaultState, mode: "onBlur" });
 
+
   // Handler for form submission
-  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+  const onSubmit: SubmitHandler<FieldValues> = async (data: DefaultFormValues) => {
     // Consts pulled from form to be following offer data schema and default form state
     const {loanAmount, interestRate, dueDate, loanTerm, numberOfInstallments, riskLevel, expiryDate} = getValues();
     // TODO: Still need to add the non input fields that are generated in the post request
     // For borrows: add issue date and need to add riskLevel based on risk assessment code 
     // For loans: need to add the issue date
+    console.log("Form submitted: ", data);
 
     // Distinguish what type of offer this is and generate non-inputted fields to complete post data obj
-    if(isLoan){
-      const postData = {
-        loanAmount: loanAmount,
-        interestRate: interestRate,
-        dueDate: dueDate,
-        dateOfIssue: new Date(), // added by computer
-        loanTerm: loanTerm,
-        numberOfInstallments: numberOfInstallments,
-        riskLevel: riskLevel, // use inputted risk string in a lending loan offer case
-        expiryDate: expiryDate
-      } 
-    } else{
-      const postData = {
-        loanAmount: loanAmount,
-        interestRate: interestRate,
-        dueDate: dueDate,
-        dateOfIssue: new Date(),
-        loanTerm: loanTerm,
-        numberOfInstallments: numberOfInstallments,
-        riskLevel: setRiskLevel({ desiredRisk: "random" }), // use generated risk string in borrow offer case -> for now using dummy method instead of a risk service
-        expiryDate: expiryDate
-      } 
-    }
+    // if(isLoan){
+    //   const postData = {
+    //     loanAmount: loanAmount,
+    //     interestRate: interestRate,
+    //     dueDate: dueDate,
+    //     dateOfIssue: new Date(), // added by computer
+    //     loanTerm: loanTerm,
+    //     numberOfInstallments: numberOfInstallments,
+    //     riskLevel: riskLevel, // use inputted risk string in a lending loan offer case
+    //     expiryDate: expiryDate
+    //   } 
+    // } else{
+    //   const postData = {
+    //     loanAmount: loanAmount,
+    //     interestRate: interestRate,
+    //     dueDate: dueDate,
+    //     dateOfIssue: new Date(),
+    //     loanTerm: loanTerm,
+    //     numberOfInstallments: numberOfInstallments,
+    //     riskLevel: setRiskLevel({ desiredRisk: "random" }), // use generated risk string in borrow offer case -> for now using dummy method instead of a risk service
+    //     expiryDate: expiryDate
+    //   } 
+    // }
 
-    api?.post("loan-service/offers/", {
-      loanAmount: loanAmount,
-      interestRate: interestRate,
-      dueDate: dueDate,
-      loanTerm: loanTerm,
-      numberOfInstallments: numberOfInstallments,
-      riskLevel: riskLevel,
-      expiryDate: expiryDate
-    })
-    .then((e) => {
-      console.log(e)
-    })
-    .catch((e) => {
-      console.log(e)
-    })
+    // api?.post("loan-service/offers/", {
+    //   loanAmount: loanAmount,
+    //   interestRate: interestRate,
+    //   dueDate: dueDate,
+    //   loanTerm: loanTerm,
+    //   numberOfInstallments: numberOfInstallments,
+    //   riskLevel: riskLevel,
+    //   expiryDate: expiryDate
+    // })
+    // .then((e) => {
+    //   console.log(e)
+    // })
+    // .catch((e) => {
+    //   console.log(e)
+    // })
   };
 
   // Placeholder for now, later this will be determined by the services coded by Jingshi/Marko
@@ -160,7 +169,8 @@ const MakeNewOffer = () => {
         </div>
         {/* Form container wrapper */}
         <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-md"> 
-          <form className="space-y-3" onSubmit={handleSubmit(onSubmit)}>
+          {/* Form has no validate attribute so validation is handled by react-hook-form instead */}
+          <form className="space-y-3" onSubmit={handleSubmit(onSubmit)} noValidate> 
             {/* TOGGLE TYPE BUTTON */}
             {/* <div className="flex items-center justify-center mt-2">
               <button
@@ -179,76 +189,117 @@ const MakeNewOffer = () => {
                   <input
                     //TODO: Will read into input params and configure for error handling next
                     {...register("loanAmount", {
-                      required: "Loan amount is required",
-                      minLength: {
-                        value: 2,
-                        message: "Must choose a larger amount",
-                      },
+                      required: "Loan amount is required"
                     })}
-                    type="text"
+                    type="number"
+                    min="1"
+                    max="999999999"
                     placeholder="Loan amount"
                     className="block w-full rounded-md border py-3 text-center bg-white text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
                   />
+                  <p className="text-red-700 text-sm mt-1">{`${errors.loanAmount?.message || ''}`}</p>
                 </div>
                 {/* INTEREST RATE INPUT DIV  */}
                 <div className="my-4">
                   <input
                     // TODO: Update types depending on input
-                    type="text"
+                    {...register("interestRate", {
+                      required: "Interest rate is required"
+                    })}
+                    type="number"
+                    min="0"
+                    max="100"
                     placeholder="Interest rate"
                     className="block w-full rounded-md border py-3 text-center bg-white text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
                   />
+                  <p className="text-red-700 text-sm mt-1">{`${errors.interestRate?.message || ''}`}</p>
                 </div>
-                {/* DUE DATE INPUT DIV  */}
-                <div className="my-4">
-                  <input
-                    type="text"
-                    placeholder="Due date"
-                    className="block w-full rounded-md border py-3 text-center bg-white text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
-                  />
-                </div>
-                {/* DATE ISSUED INPUT DIV -> TODO: SHOULD BE AUTOFILLED BASED ON DATE THIS IS POSTED NO NEED FOR USER INPUT */}
-                {/* <div className="my-4">
-                  <input
-                    type="text"
-                    placeholder="Date Issued"
-                    className="block w-fit rounded-md border py-3 text-center bg-white text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
-                  />
-                </div> */}
                 {/* LOAN TERM INPUT DIV  */}
                 <div className="my-4">
                   <input
-                    type="text"
+                    {...register("loanTerm", {
+                      required: "Loan term is required"
+                    })}
+                    type="number"
+                    min="1"
+                    max="999"
                     placeholder="Term of loan"
                     className="block w-full rounded-md border py-3 text-center bg-white text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
                   />
+                  <p className="text-red-700 text-sm mt-1">{`${errors.loanTerm?.message || ''}`}</p>
                 </div>
                 {/* INSTALLMENTS INPUT DIV  */}
                 <div className="my-4">
                   <input
-                    type="text"
+                    {...register("numberOfInstallments", {
+                      required: "# of installments is required"
+                    })}
+                    type="number"
                     placeholder="Number of installments"
                     className="block w-full rounded-md border py-3 text-center bg-white text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
                   />
+                  <p className="text-red-700 text-sm mt-1">{`${errors.numberOfInstallments?.message || ''}`}</p>
                 </div>
-                {/* RISK INPUT DIV -> ONLY NEED TO SHOW ON LOAN OFFER NOT BORROW OFFER  */}
-                {isLoan && 
+                {/* DUE DATE INPUT DIV  */}
                 <div className="my-4">
                   <input
+                    {...register("dueDate", {
+                      required: "Due date is required"
+                    })}
                     type="text"
-                    placeholder="Risk threshold"
+                    placeholder="Due date"
+                    onFocus={(e) => (e.target.type = "date")}
+                    onBlur={(e) => (e.target.type = "text")}
                     className="block w-full rounded-md border py-3 text-center bg-white text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
                   />
+                  <p className="text-red-700 text-sm mt-1">{`${errors.dueDate?.message || ''}`}</p>
                 </div>
-                }
                 {/* EXPIRY INPUT DIV  */}
                 <div className="my-4">
                   <input
+                    {...register("expiryDate", {
+                      required: "Expiration date is required"
+                    })}
                     type="text"
                     placeholder="Date of expiry"
+                    onFocus={(e) => (e.target.type = "date")}
+                    onBlur={(e) => (e.target.type = "text")}
                     className="block w-full rounded-md border py-3 text-center bg-white text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
                   />
+                  <p className="text-red-700 text-sm mt-1">{`${errors.expiryDate?.message || ''}`}</p>
                 </div>
+                {/* RISK INPUT DIV -> ONLY NEED TO SHOW ON LOAN OFFER NOT BORROW OFFER  */}
+                {isLoan && 
+                <>
+                  <div className="my-4 flex flex-row justify-between px-16 mb-4 pt-0.5">
+                    <div className="inline flex flex-col items-center gap-1">
+                      <input
+                        {...register("riskLevel", {
+                          required: "Risk threshold is required"
+                        })}
+                        type="radio"
+                        id="low-risk"
+                        placeholder="Risk threshold"
+                        className="inline w-full rounded-md py-3 text-center bg-white text-gray-900 placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
+                      />
+                      <label className="" htmlFor="low-risk">Low risk</label>
+                    </div>
+                    <div className="inline flex flex-col items-center gap-1">
+                      <input
+                        {...register("riskLevel", {
+                          required: "Risk threshold is required"
+                        })}
+                        type="radio"
+                        id="high-risk"
+                        placeholder="Risk threshold"
+                        className="inline w-full rounded-md py-3 text-center bg-white text-gray-900 placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
+                      />
+                      <label htmlFor="high-risk" className="">High risk</label>
+                    </div>
+                  </div>
+                  <p className="text-red-700 text-sm mt-1 block text-center">{`${errors.riskLevel?.message || ''}`}</p>
+                </>
+                }
               </div>
             </div>
             {/* SUBMIT BUTTON */}
@@ -275,6 +326,7 @@ const MakeNewOffer = () => {
               </label>
             </div>
           </form>
+          {/* <DevTool control={control}/> */}
         </div>
       </div>
     </div>
