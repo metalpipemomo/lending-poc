@@ -9,6 +9,7 @@ import { DevTool } from "@hookform/devtools";
 // import Axios from "../../lib/AxiosBase";
 import Axios from 'axios';
 import { DefaultFormValues } from 'react-phone-number-input/react-hook-form';
+import { useRouter } from 'next/navigation'
 
 // Data structure for offer entered to DB which is mix of user inputted fields and computer generated fields
 interface Offer{
@@ -33,6 +34,9 @@ const MakeNewOffer = () => {
   const expiryDateRef = useRef<HTMLInputElement>(null);
   const dueDateRef = useRef<HTMLInputElement>(null);
 
+  // For redirecting on client side after post request completes
+  const router = useRouter();
+
   // Default state of form for reset should be same as offer schema except for fields that are generated seperate from user's input
   const formDefaultState = {
     defaultValues: {
@@ -56,7 +60,6 @@ const MakeNewOffer = () => {
     getValues,
     control
   } = useForm<FieldValues>({ defaultValues: formDefaultState, mode: "onBlur" });
-
 
   // Handler for form submission
   const onSubmit: SubmitHandler<FieldValues> = async (data: DefaultFormValues) => {
@@ -103,11 +106,12 @@ const MakeNewOffer = () => {
       } 
     }
 
-    const JWTToken = localStorage.getItem('jwtToken'); // Replace 'your_token_key' with the actual key
+    const JWTToken = localStorage.getItem('jwtToken');
 
     Axios.post("http://localhost:4040/api/loan-service/offers/", postData, { headers: {'content-type': 'application/json', "Authorization" : `Bearer ${JWTToken}`}})
     .then((e) => {
       console.log(e)
+      router.push('/dashboard');
     })
     .catch((e) => {
       console.log(e)
@@ -270,39 +274,6 @@ const MakeNewOffer = () => {
                     />
                     <p className="text-red-700 text-sm mt-1">{`${errors.riskLevel?.message || ''}`}</p>
                   </div>
-                  {isLoan && 
-  <>
-    <div className="my-4 flex flex-row justify-between px-16 mb-4 pt-0.5">
-      <div className="inline flex flex-col items-center gap-1">
-        <input
-          {...register("riskLevel", {
-            required: "Risk threshold is required"
-          })}
-          type="radio"
-          id="low-risk"
-          name={'lowRisk'}  
-          placeholder="Risk threshold"
-          className="inline w-full rounded-md py-3 text-center bg-white text-gray-900 placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
-        />
-        <label className="" htmlFor="low-risk">Low risk</label>
-      </div>
-      <div className="inline flex flex-col items-center gap-1">
-        <input
-          {...register("riskLevel", {
-            required: "Risk threshold is required"
-          })}
-          type="radio"
-          id="high-risk"
-          name={'highRisk'}  
-          placeholder="Risk threshold"
-          className="inline w-full rounded-md py-3 text-center bg-white text-gray-900 placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
-        />
-        <label htmlFor="high-risk" className="">High risk</label>
-      </div>
-    </div>
-    <p className="text-red-700 text-sm mt-1 block text-center">{`${errors.riskLevel?.message || ''}`}</p>
-  </>
-  }
                 </>
                 }
               </div>
