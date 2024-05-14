@@ -2,7 +2,7 @@
 import 'react-phone-number-input/style.css'
 import PhoneInput, { parsePhoneNumber } from 'react-phone-number-input';
 import { E164Number } from 'libphonenumber-js/core';
-import { useState, ReactNode, HTMLInputTypeAttribute, FormEvent, forwardRef, useRef } from 'react';
+import { useState, ReactNode, HTMLInputTypeAttribute, FormEvent, forwardRef, useRef, useEffect } from 'react';
 import HiddenPassIcon from '../../public/hidden_password.svg'
 import RevealedPassIcon from '../../public/revealed_password.svg'
 import Image from 'next/image';
@@ -34,8 +34,8 @@ type RegisterData = z.infer<typeof RegisterSchema>;
 export default function Register() {
     const [passwordToggled, setPasswordToggle] = useState(false);
     const [errors, setErrors] = useState<string[]>([]);
-
     const [phoneNumber, setPhoneNumber] = useState<E164Number | undefined>();
+
     const email = useRef<HTMLInputElement>(null);
     const password = useRef<HTMLInputElement>(null);
     const firstName = useRef<HTMLInputElement>(null);
@@ -50,6 +50,24 @@ export default function Register() {
     const axios = useAxios();
     const router = useRouter();
     
+    const ValidateField = (field: keyof RegisterData, value: any) => {
+        const schema = z.object({ [field]: RegisterSchema.shape[field] });
+        const result = schema.safeParse({ [field]: value });
+    
+        if (!result.success) {
+            setErrors(prev => {
+                // Remove any previous errors for this field
+                const filteredErrors = prev.filter(error => !error.includes(field));
+                // Add new errors
+                return [...filteredErrors, ...result.error.errors.map(error => `${field}: ${error.message}`)];
+            });
+        } else {
+            setErrors(prev => {
+                // Remove any errors for this field
+                return prev.filter(error => !error.includes(field));
+            });
+        }
+    };
     const FormSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         e.stopPropagation();
@@ -96,10 +114,10 @@ export default function Register() {
             <form onSubmit={(e) => FormSubmit(e)} className='flex flex-col p-8 w-4/12 bg-white rounded-md shadow-md space-y-4 items-center justify-center'>
                 <h1 className={'text-xl bold font-bold mb-4'}>Registration Form</h1>
                 <FormRow>
-                    <PhoneInput className='[&>input]:outline-none border rounded-sm px-2 py-1 shadow-md' placeholder={"Phone Number"} value={phoneNumber} onChange={setPhoneNumber}/>
+                    <PhoneInput className='[&>input]:outline-none border rounded-sm px-2 py-1 shadow-md' placeholder={"Phone Number"} value={phoneNumber} onChange={setPhoneNumber} onBlur={() => ValidateField('phoneNumber', phoneNumber)}/>
                 </FormRow>
                 <FormRow>
-                    <FormInput placeholder='Email' type="email" ref={email}/>
+                    <FormInput placeholder='Email' type="email" ref={email} onBlur={() => ValidateField('email', email.current?.value)}/>
                     <div className='flex flex-row'>
                         <button className='pr-2' onClick={(e) => {
                             e.preventDefault();
@@ -112,26 +130,26 @@ export default function Register() {
                                 height={20}
                                 width={20}/>
                         </button>
-                        <FormInput placeholder='Password' type={passwordToggled ? 'text' : 'password'} ref={password}/>
+                        <FormInput placeholder='Password' type={passwordToggled ? 'text' : 'password'} ref={password} onBlur={() => ValidateField('password', password.current?.value)}/>
                     </div>
                 </FormRow>
                 <FormRow>
-                    <FormInput placeholder='First Name' type="text" ref={firstName}/>
-                    <FormInput placeholder='Last Name' type="text" ref={lastName}/>
+                    <FormInput placeholder='First Name' type="text" ref={firstName} onBlur={() => ValidateField('firstName', firstName.current?.value)}/>
+                    <FormInput placeholder='Last Name' type="text" ref={lastName} onBlur={() => ValidateField('lastName', lastName.current?.value)}/>
                 </FormRow>
                 <FormRow>
-                    <FormInput placeholder='Street Address' type='text' ref={streetAddress}/>
-                    <FormInput placeholder='Postal Code' type='text' ref={postalCode}/>
+                    <FormInput placeholder='Street Address' type='text' ref={streetAddress} onBlur={() => ValidateField('streetAddress', streetAddress.current?.value)}/>
+                    <FormInput placeholder='Postal Code' type='text' ref={postalCode} onBlur={() => ValidateField('postalCode', postalCode.current?.value)}/>
                 </FormRow>
                 <FormRow>
-                    <FormInput placeholder='Country' type='text' ref={country}/>
-                    <FormInput placeholder='Province' type='text' ref={province}/>
+                    <FormInput placeholder='Country' type='text' ref={country} onBlur={() => ValidateField('country', country.current?.value)}/>
+                    <FormInput placeholder='Province' type='text' ref={province} onBlur={() => ValidateField('province', province.current?.value)}/>
                 </FormRow>
                 <FormRow>
-                    <FormInput placeholder='City' type='text' ref={city}/>
+                    <FormInput placeholder='City' type='text' ref={city} onBlur={() => ValidateField('city', city.current?.value)}/>
                 </FormRow>
                 <FormRow>
-                    <FormInput placeholder='Credit Score' type='number' ref={creditScore}/>
+                    <FormInput placeholder='Credit Score' type='number' ref={creditScore} onBlur={() => ValidateField('creditScore', parseInt(creditScore.current?.value || '0'))}/>
                 </FormRow>
                 <button className='w-fit px-4 py-2 text-sm font-semibold rounded-full shadow-sm border border-black bg-black text-white hover:bg-gray-300 hover:text-gray-800 hover:border-gray-800 focus:outline-none focus:ring-2' type={'submit'}>Register</button>
                 {errors.length > 0 && (
@@ -161,10 +179,11 @@ const FormRow = ({ children }: FormRowProps) =>  {
 type FormInputProps = {
     placeholder: string,
     type: HTMLInputTypeAttribute,
+    onBlur: () => void,
 };
 
-const FormInput = forwardRef<HTMLInputElement, FormInputProps>(({ placeholder, type }, ref) => {
+const FormInput = forwardRef<HTMLInputElement, FormInputProps>(({ placeholder, type, onBlur }, ref) => {
     return (
-        <input required ref={ref} className='border rounded-sm px-2 py-1 shadow-md' placeholder={placeholder} type={type} />
+        <input required ref={ref} className='border rounded-sm px-2 py-1 shadow-md' placeholder={placeholder} type={type} onBlur={onBlur} />
     );
 });
