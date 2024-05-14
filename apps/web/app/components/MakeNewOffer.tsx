@@ -69,10 +69,6 @@ const MakeNewOffer = () => {
     // For borrows: add issue date and need to add riskLevel based on risk assessment code 
     // For loans: need to add the issue date
     console.log("Form submitted: ", data);
-    console.log("Uhh");
-    console.log(localStorage.length);
-    console.log(localStorage);
-    console.log("local storage check: ", localStorage.length);
 
     let postData: Offer;
 

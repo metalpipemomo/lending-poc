@@ -7,6 +7,8 @@ import { ObjectId } from 'mongodb';
 import { useState, useEffect } from 'react';
 // import Axios from "../../lib/AxiosBase"; // for api calls
 import Axios from 'axios';
+import OfferBoxItem from '../components/OfferBoxItem';
+//import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@nextui-org/table";
 
 // Define an interface for explicit TS type definition according to schema
 interface Offer{
@@ -49,24 +51,12 @@ const OfferBox: React.FC  = () => { // explicit type on OfferBox is inferred for
   }, []); // No dependency only running on load/mount
 
   return (
-    <div id="dashboard-offers-container" className="mt-2 size-fit pl-1">
+    <div id="dashboard-offers-container" className="flex items-center mt-2 w-full pl-1 h-screen">
       {/* Display loaded items in a list on dashboard */}
-      <ul id="dashboard-offers" className="flex flex-wrap gap-2">
+      <ul id="dashboard-offers" className="w-10/12 shadow-sm flex flex-col items-center justify-center">
         {/* Map all the loaded entries data into list items */}
         {offers.map(offer => 
-          <li key={offer._id.toString()} className="mb-2 w-1/6 border border-white bg-gray-700 p-1 text-xs text-white hover:bg-gray-800">
-            <h1 className="text-xl font-bold">{offer.isLoan ? "Loan Offer" : "Borrow Offer"}</h1>
-            <div><span className="font-bold">userId: </span>{offer.userId}</div>
-            <div><span className="font-bold">loanAmount: </span>{offer.loanAmount.toString()}</div>
-            <div><span className="font-bold">interestRate: </span>{offer.interestRate.toString()}</div>
-            <div><span className="font-bold">dueDate: </span>{offer.dueDate.toString()}</div>
-            <div><span className="font-bold">dateOfIssue: </span>{offer.dateOfIssue.toString()}</div>
-            <div><span className="font-bold">loanTerm: </span>{offer.loanTerm.toString()}</div>
-            <div><span className="font-bold">numberOfInstallments: </span>{offer.numberOfInstallments.toString()}</div>
-            <div><span className="font-bold">riskLevel: </span>{offer.riskLevel.toString()}</div>
-            {/* Check for null on expiry date since it is optional on DB schema */}
-            <div><span className="font-bold">expiryDate: </span>{offer.expiryDate ? offer.expiryDate.toString() : "No Expiration"}</div> 
-          </li>
+          <OfferBoxItem offer={offer}/>
         )}
       </ul>
     </div>
@@ -96,3 +86,38 @@ export async function getServerSideProps() {
   //     };
   // }
 }
+
+// 
+ // <Table aria-label="Current" id="dashboard-offers-container" className="mt-2 w-full pl-1 flex items-center justify-center space-evenly h-screen">
+    //   <TableHeader>
+    //     <TableColumn>Offer Type</TableColumn>
+    //     <TableColumn>User</TableColumn>
+    //     <TableColumn>Amount</TableColumn>
+    //     <TableColumn>Interest</TableColumn>
+    //     <TableColumn>Due by</TableColumn>
+    //     <TableColumn>Posted</TableColumn>
+    //     <TableColumn>Term</TableColumn>
+    //     <TableColumn>Installments</TableColumn>
+    //     <TableColumn>Risk</TableColumn>
+    //     <TableColumn>Expires</TableColumn>
+    //   </TableHeader>
+    //   <TableBody>
+    //     {/* Display loaded offers as rows on the table */}
+    //     {/* Map all the loaded entries data into list items */}
+    //     {offers.map(offer => 
+    //       <TableRow key={offer._id.toString()} className="mb-2 w-full p-1 text-xs text-slate-700 bg-gray-300 rounded-lg">
+    //         <TableCell className="text-xl">{offer.isLoan ? "Loan Offer" : "Borrow Offer"}</TableCell>
+    //         <TableCell>{offer.userId}</TableCell>
+    //         <TableCell>{'$' + offer.loanAmount.toString()}</TableCell>
+    //         <TableCell>{offer.interestRate.toString() + '%'}</TableCell>
+    //         <TableCell>{offer.dueDate.toString().slice(0, 10)}</TableCell>
+    //         <TableCell>{offer.dateOfIssue.toString().slice(0, 10)}</TableCell>
+    //         <TableCell>{offer.loanTerm.toString()}</TableCell>
+    //         <TableCell>{offer.numberOfInstallments.toString()}</TableCell>
+    //         <TableCell>{offer.riskLevel.toString()}</TableCell>
+    //         {/* Check for null on expiry date since it is optional on DB schema */}
+    //         <TableCell>{offer.expiryDate ? offer.expiryDate.toString() : "No Expiration"}</TableCell> 
+    //       </TableRow>
+    //     )}
+    //   </TableBody>
+    // </Table>
