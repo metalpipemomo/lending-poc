@@ -103,3 +103,20 @@ export const deleteMatch = async (req: Request, res: Response) => {
         res.status(500).json({ error: 'Internal error attempting to delete match by ID.' });
     }
 };
+
+// Function to get match by id
+export const getAllMatchesByUserId = async (req: Request, res: Response) => {
+    const id: string = req.params.id;
+
+    try {
+        const match = await MatchModel.find({
+            $or: [{ loanerId: id }, { borrowerId: id }]
+        });
+        if (!match) {
+            return res.status(404).json({ error: 'No such match.' });
+        }
+        res.status(200).json(match);
+    } catch (error) {
+        res.status(500).json({ error: 'Internal error attempting to fetch match by ID.' });
+    }
+};

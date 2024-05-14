@@ -4,7 +4,8 @@ import {
     getMatchById,
     createMatch,
     patchMatch,
-    deleteMatch
+    deleteMatch,
+    getAllMatchesByUserId
 } from '../controllers/match-controller';
 
 const router = express.Router();
@@ -24,4 +25,6 @@ router.patch('/matches/:id', patchMatch);
 // Route to delete match by id
 router.delete('/matches/:id', deleteMatch);
 
+// Route to get all matches by userid
+router.get('/matches/byUser/:id', getAllMatchesByUserId);
 export default router;
