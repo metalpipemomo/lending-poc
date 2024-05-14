@@ -74,6 +74,12 @@ const MakeNewOffer = () => {
     } else return desiredRisk;
   }
 
+  // Toggle fields for borrow/lend offers by setting isLoan boolean
+  const handleToggle = () => {
+    setIsLoan(!isLoan);
+    // Anything else we need to do
+  }
+
   // Handler for form submission
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     // Consts pulled from form to be following offer data schema and default form state
@@ -137,9 +143,9 @@ const MakeNewOffer = () => {
   return (
     <>
     {/* Component Wrapper maybe make another wrapper with overflow-hidden and relative*/}
-    <div className="relative flex  min-h-screen max-w-[2520px] flex-col items-center justify-center overflow-hidden">
+    <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden">
       {/* Card background wrapper */}
-      <div className="bg-gray-50 px-10 py-7 rounded-lg max-w-md relative">
+      <div className="bg-gray-50 px-10 py-7 w-1/4 max-w-md rounded-lg relative">
          {/* TITLE DIV */}
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <h2 className="mt-1 text-2xl text-center text-slate-700">
@@ -153,7 +159,7 @@ const MakeNewOffer = () => {
           </div>
         </div>
         {/* Form container wrapper */}
-        <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-sm"> 
+        <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-md"> 
           <form className="space-y-3" onSubmit={()=>{}}>
             {/* TOGGLE TYPE BUTTON */}
             {/* <div className="flex items-center justify-center mt-2">
@@ -166,8 +172,8 @@ const MakeNewOffer = () => {
                 Post Offer
               </button>
             </div> */}
-            <div className="flex w-fit flex-col gap-2.5 text-black">
-              <div>
+            <div className="flex items-center w-full flex-col gap-2.5 text-black">
+              <div className="w-10/12">
                 {/* LOAN AMOUNT INPUT DIV  */}
                 <div className="my-4">
                   <input
@@ -181,7 +187,7 @@ const MakeNewOffer = () => {
                     // })}
                     type="text"
                     placeholder="Loan amount"
-                    className="block w-fit rounded-md border py-3 text-center bg-white text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
+                    className="block w-full rounded-md border py-3 text-center bg-white text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
                   />
                 </div>
                 {/* INTEREST RATE INPUT DIV  */}
@@ -190,7 +196,7 @@ const MakeNewOffer = () => {
                     // TODO: Update types depending on input
                     type="text"
                     placeholder="Interest rate"
-                    className="block w-fit rounded-md border py-3 text-center bg-white text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
+                    className="block w-full rounded-md border py-3 text-center bg-white text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
                   />
                 </div>
                 {/* DUE DATE INPUT DIV  */}
@@ -198,7 +204,7 @@ const MakeNewOffer = () => {
                   <input
                     type="text"
                     placeholder="Due date"
-                    className="block w-fit rounded-md border py-3 text-center bg-white text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
+                    className="block w-full rounded-md border py-3 text-center bg-white text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
                   />
                 </div>
                 {/* DATE ISSUED INPUT DIV -> TODO: SHOULD BE AUTOFILLED BASED ON DATE THIS IS POSTED NO NEED FOR USER INPUT */}
@@ -214,7 +220,7 @@ const MakeNewOffer = () => {
                   <input
                     type="text"
                     placeholder="Term of loan"
-                    className="block w-fit rounded-md border py-3 text-center bg-white text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
+                    className="block w-full rounded-md border py-3 text-center bg-white text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
                   />
                 </div>
                 {/* INSTALLMENTS INPUT DIV  */}
@@ -222,7 +228,7 @@ const MakeNewOffer = () => {
                   <input
                     type="text"
                     placeholder="Number of installments"
-                    className="block w-fit rounded-md border py-3 text-center bg-white text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
+                    className="block w-full rounded-md border py-3 text-center bg-white text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
                   />
                 </div>
                 {/* RISK INPUT DIV -> ONLY NEED TO SHOW ON LOAN OFFER NOT BORROW OFFER  */}
@@ -231,7 +237,7 @@ const MakeNewOffer = () => {
                   <input
                     type="text"
                     placeholder="Risk threshold"
-                    className="block w-fit rounded-md border py-3 text-center bg-white text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
+                    className="block w-full rounded-md border py-3 text-center bg-white text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
                   />
                 </div>
                 }
@@ -240,7 +246,7 @@ const MakeNewOffer = () => {
                   <input
                     type="text"
                     placeholder="Date of expiry"
-                    className="block w-fit rounded-md border py-3 text-center bg-white text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
+                    className="block w-full rounded-md border py-3 text-center bg-white text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
                   />
                 </div>
               </div>
@@ -251,12 +257,16 @@ const MakeNewOffer = () => {
                 type="submit"
                 disabled={detailsReady}
                 className={`w-9/12 py-3 text-sm font-semibold rounded-full shadow-sm ${detailsReady
-                  ? "bg-black text-white hover:opacity-95 focus:outline-none focus:ring-2"
-                  : "bg-gray-200 text-gray-400"
+                  ? "border border-black bg-black text-white hover:opacity-95 hover:bg-gray-300 hover:text-gray-800 hover:border-gray-800 focus:outline-none focus:ring-2"
+                  : "border border-gray-200 bg-gray-200 text-gray-400"
                   } `}
               >
                 Post Offer
               </button>
+            </div>
+            {/* TOGGLE BUTTON */}
+            <div className="flex items-center justify-center mt-2">
+              <div className="w-fit px-3 py-2 text-sm font-semibold rounded-full shadow-sm border border-black bg-black text-center text-white hover:bg-gray-300 hover:text-gray-800 hover:border-gray-800 cursor-pointer focus:outline-none focus:ring-2" onClick={handleToggle}><h2 className="">{isLoan ? 'Borrow Money Instead' : ' Lend Money Instead'}</h2></div>
             </div>
             {/* FOOTER MESSAGE */}
             <div className=" flex items-center justify-center">

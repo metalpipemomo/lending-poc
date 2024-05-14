@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Added global overflow hidden since single page */
+html{
+  overflow: hidden;
+  background: #999999;
+}
