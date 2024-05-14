@@ -74,6 +74,7 @@ export default function Register() {
 
         const parsedPhoneNumber = parsePhoneNumber(phoneNumber || '');
         const countryCode = parsedPhoneNumber?.country || '';
+        const nationalPhoneNumber = parsedPhoneNumber?.nationalNumber || '';
 
         const formData: RegisterData = {
             firstName: firstName.current?.value || '',
@@ -81,7 +82,7 @@ export default function Register() {
             email: email.current?.value || '',
             password: password.current?.value || '',
             countryCode: countryCode,
-            phoneNumber: phoneNumber || '',
+            phoneNumber: nationalPhoneNumber,
             creditScore: parseInt(creditScore.current?.value || '0'),
             streetAddress: streetAddress.current?.value || '',
             province: province.current?.value || '',
