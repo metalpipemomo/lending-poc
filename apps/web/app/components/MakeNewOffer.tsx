@@ -238,6 +238,8 @@ const MakeNewOffer = () => {
                       required: "# of installments is required"
                     })}
                     type="number"
+                    min="1"
+                    max="9999"
                     placeholder="Number of installments"
                     className="block w-full rounded-md border py-3 text-center bg-white text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
                   />
