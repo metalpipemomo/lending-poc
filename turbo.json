@@ -4,7 +4,8 @@
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**"]
+      "outputs": [".next/**", "!.next/cache/**"],
+      "env": ["MONGO_URI", "DB_NAME", "PORT", "LIVE_SERVICE_URL", "NODE_ENV"]
     },
     "lint": {
       "dependsOn": ["^lint"]

@@ -8,6 +8,8 @@ import https from 'https';
 import fs from 'fs';
 import path from 'path';
 
+
+import matchRoutes from './routes/matches';
 import { AuthenticateRoutes } from "./controllers/auth-controller";
 
 import loanRoutes from './routes/loans';
@@ -45,6 +47,7 @@ app.use(AuthenticateRoutes);
 
 // Loan route
 app.use('/api/loan-service', loanRoutes);
+app.use('/api/loan-service', matchRoutes);
 app.use('/api/auth', userRoutes);
 
 // Made this to test auth middleware
