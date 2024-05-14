@@ -80,6 +80,9 @@ const MakeNewOffer = () => {
     // For borrows: add issue date and need to add riskLevel based on risk assessment code 
     // For loans: need to add the issue date
     console.log("Form submitted: ", data);
+    
+    const selectedRiskLevel = getValues('riskLevel');
+    console.log("radio data: ", selectedRiskLevel)
 
     // Distinguish what type of offer this is and generate non-inputted fields to complete post data obj
     // if(isLoan){
@@ -271,33 +274,21 @@ const MakeNewOffer = () => {
                 {/* RISK INPUT DIV -> ONLY NEED TO SHOW ON LOAN OFFER NOT BORROW OFFER  */}
                 {isLoan && 
                 <>
-                  <div className="my-4 flex flex-row justify-between px-16 mb-4 pt-0.5">
-                    <div className="inline flex flex-col items-center gap-1">
-                      <input
-                        {...register("riskLevel", {
-                          required: "Risk threshold is required"
-                        })}
-                        type="radio"
-                        id="low-risk"
-                        placeholder="Risk threshold"
-                        className="inline w-full rounded-md py-3 text-center bg-white text-gray-900 placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
-                      />
-                      <label className="" htmlFor="low-risk">Low risk</label>
-                    </div>
-                    <div className="inline flex flex-col items-center gap-1">
-                      <input
-                        {...register("riskLevel", {
-                          required: "Risk threshold is required"
-                        })}
-                        type="radio"
-                        id="high-risk"
-                        placeholder="Risk threshold"
-                        className="inline w-full rounded-md py-3 text-center bg-white text-gray-900 placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
-                      />
-                      <label htmlFor="high-risk" className="">High risk</label>
-                    </div>
-                  </div>
-                  <p className="text-red-700 text-sm mt-1 block text-center">{`${errors.riskLevel?.message || ''}`}</p>
+                  <div className="my-4">
+                  <input
+                    {...register("riskLevel", {
+                      required: "Risk threshold is required",
+                      validate: (fieldValue) => {
+                        return (fieldValue == "high-risk" || fieldValue == "low-risk") || "Please enter either low-risk or high-risk.";
+                      }
+                    
+                    })}
+                    type="text"
+                    placeholder="Risk threshold"
+                    className="block w-full rounded-md border py-3 text-center bg-white text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
+                  />
+                  <p className="text-red-700 text-sm mt-1">{`${errors.riskLevel?.message || ''}`}</p>
+                </div>
                 </>
                 }
               </div>
@@ -386,3 +377,39 @@ export default MakeNewOffer
 //   riskLevel: "low-risk",
 //   expiryDate: "2024-09-09"
 // };
+
+
+// RADIO BUTTON APPROACH WAS NOT WORKING QUICK ENOUGH SCRAPPED FOR NOW
+// {isLoan && 
+//   <>
+//     <div className="my-4 flex flex-row justify-between px-16 mb-4 pt-0.5">
+//       <div className="inline flex flex-col items-center gap-1">
+//         <input
+//           {...register("riskLevel", {
+//             required: "Risk threshold is required"
+//           })}
+//           type="radio"
+//           id="low-risk"
+//           name={'lowRisk'}  
+//           placeholder="Risk threshold"
+//           className="inline w-full rounded-md py-3 text-center bg-white text-gray-900 placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
+//         />
+//         <label className="" htmlFor="low-risk">Low risk</label>
+//       </div>
+//       <div className="inline flex flex-col items-center gap-1">
+//         <input
+//           {...register("riskLevel", {
+//             required: "Risk threshold is required"
+//           })}
+//           type="radio"
+//           id="high-risk"
+//           name={'highRisk'}  
+//           placeholder="Risk threshold"
+//           className="inline w-full rounded-md py-3 text-center bg-white text-gray-900 placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
+//         />
+//         <label htmlFor="high-risk" className="">High risk</label>
+//       </div>
+//     </div>
+//     <p className="text-red-700 text-sm mt-1 block text-center">{`${errors.riskLevel?.message || ''}`}</p>
+//   </>
+//   }
