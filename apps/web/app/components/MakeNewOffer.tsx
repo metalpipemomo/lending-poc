@@ -6,42 +6,28 @@ import { useState, useEffect, useRef } from 'react';
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
 // Updating to use axios as rest of team using to streamline api calls and handling of promises.
-import Axios from "../../lib/AxiosBase";
+// import Axios from "../../lib/AxiosBase";
+import Axios from 'axios';
 import { DefaultFormValues } from 'react-phone-number-input/react-hook-form';
 
 // Data structure for offer entered to DB which is mix of user inputted fields and computer generated fields
 interface Offer{
-  userId: String,
-  loanAmount: Number,
-  interestRate: Number,
+  userId: string,
+  loanAmount: number,
+  interestRate: number,
   dueDate: Date,
   dateOfIssue: Date, // Generated
-  loanTerm: Number,
-  numberOfInstallments: Number,
-  isLoan: Boolean, // Set by boolean
-  riskLevel: String, // Generated for borrowing case, set by input for lending case
+  loanTerm: number,
+  numberOfInstallments: number,
+  isLoan: boolean, // Set by boolean
+  riskLevel: string, // Generated for borrowing case, set by input for lending case
   expiryDate: Date
 }
 
 const MakeNewOffer = () => {
-//   const [formData, setFormData] = useState<Offer>({
-//     userId: '',
-//     loanAmount: '',
-//     interestRate: '',
-//     dueDate: '',
-//     dateOfIssue: '',
-//     loanTerm: '',
-//     numberOfInstallments: '',
-//     isLoan: '',
-//     riskLevel: '',
-//     expiryDate: '',
-// });
-
-
   // Component state
   const [isLoan, setIsLoan] = useState(true);
   const [detailsReady, setDetailsReady] = useState(false);
-  const api = Axios(); // used to make api calls
 
   // For customizing date inputs a bit
   const expiryDateRef = useRef<HTMLInputElement>(null);
@@ -80,50 +66,52 @@ const MakeNewOffer = () => {
     // For borrows: add issue date and need to add riskLevel based on risk assessment code 
     // For loans: need to add the issue date
     console.log("Form submitted: ", data);
-    
-    const selectedRiskLevel = getValues('riskLevel');
-    console.log("radio data: ", selectedRiskLevel)
+    console.log("Uhh");
+    console.log(localStorage.length);
+    console.log(localStorage);
+    console.log("local storage check: ", localStorage.length);
+
+    let postData: Offer;
 
     // Distinguish what type of offer this is and generate non-inputted fields to complete post data obj
-    // if(isLoan){
-    //   const postData = {
-    //     loanAmount: loanAmount,
-    //     interestRate: interestRate,
-    //     dueDate: dueDate,
-    //     dateOfIssue: new Date(), // added by computer
-    //     loanTerm: loanTerm,
-    //     numberOfInstallments: numberOfInstallments,
-    //     riskLevel: riskLevel, // use inputted risk string in a lending loan offer case
-    //     expiryDate: expiryDate
-    //   } 
-    // } else{
-    //   const postData = {
-    //     loanAmount: loanAmount,
-    //     interestRate: interestRate,
-    //     dueDate: dueDate,
-    //     dateOfIssue: new Date(),
-    //     loanTerm: loanTerm,
-    //     numberOfInstallments: numberOfInstallments,
-    //     riskLevel: setRiskLevel({ desiredRisk: "random" }), // use generated risk string in borrow offer case -> for now using dummy method instead of a risk service
-    //     expiryDate: expiryDate
-    //   } 
-    // }
+    if(isLoan){
+      postData = {
+        userId: "isLoanPostedFromFront",
+        loanAmount: parseInt(loanAmount),
+        interestRate: parseFloat(interestRate),
+        dueDate: dueDate,
+        dateOfIssue: new Date(), // added by computer for current date
+        loanTerm: parseInt(loanTerm),
+        numberOfInstallments: parseInt(numberOfInstallments),
+        isLoan: true,
+        riskLevel: riskLevel, // use inputted risk string in a lending loan offer case
+        expiryDate: expiryDate
+      } 
+    } else{
+      const rlevel = setRiskLevel({ desiredRisk: "random" }); // use generated risk string in borrow offer case -> for now using dummy method instead of a risk service
+      postData = {
+        userId: "isBorrowPostedFromFront",
+        loanAmount: parseInt(loanAmount),
+        interestRate: parseFloat(interestRate),
+        dueDate: dueDate,
+        dateOfIssue: new Date(),
+        loanTerm: parseInt(loanTerm),
+        numberOfInstallments: parseInt(numberOfInstallments),
+        isLoan: false,
+        riskLevel: rlevel ?? "", // null check
+        expiryDate: expiryDate
+      } 
+    }
 
-    // api?.post("loan-service/offers/", {
-    //   loanAmount: loanAmount,
-    //   interestRate: interestRate,
-    //   dueDate: dueDate,
-    //   loanTerm: loanTerm,
-    //   numberOfInstallments: numberOfInstallments,
-    //   riskLevel: riskLevel,
-    //   expiryDate: expiryDate
-    // })
-    // .then((e) => {
-    //   console.log(e)
-    // })
-    // .catch((e) => {
-    //   console.log(e)
-    // })
+    const JWTToken = localStorage.getItem('jwtToken'); // Replace 'your_token_key' with the actual key
+
+    Axios.post("http://localhost:4040/api/loan-service/offers/", postData, { headers: {'content-type': 'application/json', "Authorization" : `Bearer ${JWTToken}`}})
+    .then((e) => {
+      console.log(e)
+    })
+    .catch((e) => {
+      console.log(e)
+    })
   };
 
   // Placeholder for now, later this will be determined by the services coded by Jingshi/Marko
@@ -141,14 +129,6 @@ const MakeNewOffer = () => {
     setIsLoan(!isLoan);
     // Anything else we need to do
   }
-
-  useEffect(()=>{
-    // Check if inputted data is ready -> can do with the axios field methods and error handling/constraints 
-    // TODO: Make this check dependant on error handling once inputs are updated to handle errors/constraints
-    if(true){
-
-    }
-  }, []);
 
   // TODO: reorder tailwind classes for TS standards
   // Handle case differences for borrow offer and loan offer -> eg posting a borrow does not need risk inputted as it's calculated later on separate service.
@@ -235,7 +215,7 @@ const MakeNewOffer = () => {
                 <div className="my-4">
                   <input
                     {...register("numberOfInstallments", {
-                      required: "# of installments is required"
+                      required: "Number of installments is required"
                     })}
                     type="number"
                     min="1"
@@ -277,20 +257,52 @@ const MakeNewOffer = () => {
                 {isLoan && 
                 <>
                   <div className="my-4">
-                  <input
-                    {...register("riskLevel", {
-                      required: "Risk threshold is required",
-                      validate: (fieldValue) => {
-                        return (fieldValue == "high-risk" || fieldValue == "low-risk") || "Please enter either low-risk or high-risk.";
-                      }
-                    
-                    })}
-                    type="text"
-                    placeholder="Risk threshold"
-                    className="block w-full rounded-md border py-3 text-center bg-white text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
-                  />
-                  <p className="text-red-700 text-sm mt-1">{`${errors.riskLevel?.message || ''}`}</p>
-                </div>
+                    <input
+                      {...register("riskLevel", {
+                        required: "Risk threshold is required",
+                        validate: (fieldValue) => {
+                          return (fieldValue == "high-risk" || fieldValue == "low-risk") || "Please enter either low-risk or high-risk.";
+                        }
+                      })}
+                      type="text"
+                      placeholder="Risk threshold"
+                      className="block w-full rounded-md border py-3 text-center bg-white text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
+                    />
+                    <p className="text-red-700 text-sm mt-1">{`${errors.riskLevel?.message || ''}`}</p>
+                  </div>
+                  {isLoan && 
+  <>
+    <div className="my-4 flex flex-row justify-between px-16 mb-4 pt-0.5">
+      <div className="inline flex flex-col items-center gap-1">
+        <input
+          {...register("riskLevel", {
+            required: "Risk threshold is required"
+          })}
+          type="radio"
+          id="low-risk"
+          name={'lowRisk'}  
+          placeholder="Risk threshold"
+          className="inline w-full rounded-md py-3 text-center bg-white text-gray-900 placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
+        />
+        <label className="" htmlFor="low-risk">Low risk</label>
+      </div>
+      <div className="inline flex flex-col items-center gap-1">
+        <input
+          {...register("riskLevel", {
+            required: "Risk threshold is required"
+          })}
+          type="radio"
+          id="high-risk"
+          name={'highRisk'}  
+          placeholder="Risk threshold"
+          className="inline w-full rounded-md py-3 text-center bg-white text-gray-900 placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring-transparent focus:border-transparent"
+        />
+        <label htmlFor="high-risk" className="">High risk</label>
+      </div>
+    </div>
+    <p className="text-red-700 text-sm mt-1 block text-center">{`${errors.riskLevel?.message || ''}`}</p>
+  </>
+  }
                 </>
                 }
               </div>
@@ -300,7 +312,7 @@ const MakeNewOffer = () => {
               <button
                 type="submit"
                 disabled={detailsReady}
-                className={`w-9/12 py-3 text-sm font-semibold rounded-full shadow-sm ${detailsReady
+                className={`w-9/12 py-3 text-sm font-semibold rounded-full shadow-sm ${Object.keys(errors).length === 0
                   ? "border border-black bg-black text-white hover:opacity-95 hover:bg-gray-300 hover:text-gray-800 hover:border-gray-800 focus:outline-none focus:ring-2"
                   : "border border-gray-200 bg-gray-200 text-gray-400"
                   } `}
