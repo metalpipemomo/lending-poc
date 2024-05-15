@@ -60,6 +60,12 @@ export const createLoan = async (req: Request, res: Response) => {
   const loanData = req.body;
 
   try{
+
+    if (loanData.isLoan === 'false') {
+      const creditScore = 650;  // TO BE REPLACED WITH ACTUAL CREDIT SCORE OBTAINING
+      const riskLevel = calculateRiskScore(loanData.loanAmount, creditScore)
+      loanData.riskLevel = riskLevel
+    }
     // Make a new document entry using the Loan mongoose schema using the posted loanData
     const newLoanEntry = new LoanModel(loanData); // newLoanEntry is the returned
     // Asynchronously save the loanData to the mongoDB collection, returns the saved data entry with generated mongoID.
@@ -86,6 +92,11 @@ export const updateLoan = async (req: Request, res: Response) => {
     // Use mongoose findByIdAndUpdate function
     // Params for function: (idToUpdate, updateData, options)
     // Returns updated document on DB if successful
+    if (dataToUpdate.isLoan === 'false') {
+      const creditScore = 650;  // TO BE REPLACED WITH ACTUAL CREDIT SCORE OBTAINING
+      const riskLevel = calculateRiskScore(dataToUpdate.loanAmount, creditScore)
+      dataToUpdate.riskLevel = riskLevel
+    }
     const updatedLoanResult = await LoanModel.findByIdAndUpdate(id, dataToUpdate, options);
 
     if(!updatedLoanResult){ // No loan entry found case
