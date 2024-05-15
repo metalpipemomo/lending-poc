@@ -3,6 +3,7 @@ import { LoanModel, Loan } from '@repo/models';
 // May need to validate things later
 import mongoose from 'mongoose';
 import { Request, Response } from "express";
+import calculateRiskScore from '../util/calculateRisk'
 
 // ** REMEMBER WE ARE TREATING LOAN REQUESTS AND LOAN OFFERS AS THE SAME SCHEMA BUT WITH BOOLEAN TO DISTINGUISH
 // So both loan request/loan offer = loan data entry, we distinguish which one an entry is with the isLoan parameter
