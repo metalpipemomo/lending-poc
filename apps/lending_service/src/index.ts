@@ -8,11 +8,22 @@ import https from 'https';
 import fs from 'fs';
 import path from 'path';
 
+
+import matchRoutes from './routes/matches';
 import { AuthenticateRoutes } from "./controllers/auth-controller";
 
 import loanRoutes from './routes/loans';
 import userRoutes from './routes/auth';
 
+declare global {
+  namespace Express {
+      interface Request {
+          user?: {
+              id: string
+          };
+      }
+  }
+}
 
 const app = express();
 const port = process.env.PORT || 4041;
@@ -36,24 +47,28 @@ app.use(AuthenticateRoutes);
 
 // Loan route
 app.use('/api/loan-service', loanRoutes);
+app.use('/api/loan-service', matchRoutes);
 app.use('/api/auth', userRoutes);
+
+// Made this to test auth middleware
 app.get('/', (req: Request, res: Response) => {
   res.status(200).json({ message: "Hello World" });
+  console.log(req.user?.id);
 });
 
-const httpsOptions = {
-  key: fs.readFileSync(path.resolve(__dirname, '..', 'key.pem')),
-  cert: fs.readFileSync(path.resolve(__dirname, '..', 'cert.pem'))
-};
+// const httpsOptions = {
+//   key: fs.readFileSync(path.resolve(__dirname, '..', 'key.pem')),
+//   cert: fs.readFileSync(path.resolve(__dirname, '..', 'cert.pem'))
+// };
 
-const server = https.createServer(httpsOptions, app);
+// const server = https.createServer(httpsOptions, app);
 
 // DB connection with connection string and use the options as second arg
 mongoose.connect(process.env.MONGO_URI!, { dbName: 'Loans' }) // async returns a promise so use .then to fire a method when complete and .catch method for errors
   .then(()=>{
     // Don't want to accept requests until we have connected, so put the listener here.
     // listen for requests on a certain port number
-    server.listen(port, () =>{
+    app.listen(port, () =>{
       console.log(`Server listening on https://localhost:${port}/`);
     });
   })
