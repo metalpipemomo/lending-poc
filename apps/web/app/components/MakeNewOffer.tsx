@@ -100,7 +100,7 @@ const MakeNewOffer = () => {
         loanAmount: parseInt(loanAmount),
         interestRate: parseFloat(interestRate),
         dueDate: dueDate,
-        dateOfIssue: new Date(), // added by computer for current date
+        dateOfIssue: new Date().toISOString(), // added by computer for current date
         loanTerm: parseInt(loanTerm),
         numberOfInstallments: parseInt(numberOfInstallments),
         isLoan: true,
@@ -114,7 +114,7 @@ const MakeNewOffer = () => {
         loanAmount: parseInt(loanAmount),
         interestRate: parseFloat(interestRate),
         dueDate: dueDate,
-        dateOfIssue: new Date(),
+        dateOfIssue: new Date().toISOString(),
         loanTerm: parseInt(loanTerm),
         numberOfInstallments: parseInt(numberOfInstallments),
         isLoan: false,
@@ -122,7 +122,7 @@ const MakeNewOffer = () => {
         expiryDate: expiryDate
       } 
     }
-
+    const JWTToken = localStorage.getItem('jwtToken');
     Axios.post("http://localhost:4040/api/loan-service/offers/", postData, { headers: {'content-type': 'application/json', "Authorization" : `Bearer ${JWTToken}`}})
     .then((e) => {
       console.log(e)

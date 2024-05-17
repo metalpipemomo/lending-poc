@@ -18,6 +18,7 @@ const FilteringOptions: React.FC<FilteringOptionsProps> = ({ filterHandlerFuncti
   const [riskPopState, setRiskPopState] = useState("closed");
   const [riskIsOpen, setRiskIsOpen] = useState(false);
 
+
   // Animation controllers for flipping arrows according to sorting state
   const amountController = useAnimation();
   const interestController = useAnimation();
