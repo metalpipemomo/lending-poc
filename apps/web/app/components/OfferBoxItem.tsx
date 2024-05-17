@@ -33,6 +33,7 @@ const OfferBoxItem = ({offer} : {offer: Offer}) => {
       <div className="absolute right-2 top-3">
         <span  className="text-xl">{offer.numberOfInstallments.toString()}<span> Installments | </span><span>{offer.loanTerm.toString()} Months</span></span>
         <div className="text-right pt-1"><span className="font-bold"> Pay by: </span>{offer.dueDate.toString().slice(0,10)}</div>
+        <div className="text-right pt-1"><span className={`${offer.riskLevel === "high-risk" ? 'text-[#FF0000]': offer.riskLevel === "low-risk" ? 'text-[#00FF21]': ''}`}>{offer.riskLevel}</span></div>
       </div>
       
       {/* <span><span className="font-bold"> riskLevel: </span>{offer.riskLevel.toString()}</span> */}

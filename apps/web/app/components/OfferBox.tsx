@@ -17,22 +17,23 @@ import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from 
 // Define an interface for explicit TS type definition according to schema
 interface Offer{
   _id: ObjectId; // Does this need to be ObjectId?
-  userId: String,
-  loanAmount: Number,
-  interestRate: Number,
-  dueDate: Date,
-  dateOfIssue: Date,
-  loanTerm: Number,
-  numberOfInstallments: Number,
-  isLoan: Boolean,
-  riskLevel: String,
-  expiryDate: Date
+  userId: string,
+  loanAmount: number,
+  interestRate: number,
+  dueDate: string,
+  dateOfIssue: string,
+  loanTerm: number,
+  numberOfInstallments: number,
+  isLoan: boolean,
+  riskLevel: string,
+  expiryDate: string
 }
 
 // React component for an offer loaded from the DB. Displayed on dashboard.
 const OfferBox: React.FC  = () => { // explicit type on OfferBox is inferred for the prop
   // Pulled data state
-  const [offers, setOffers] = useState<Offer[]>([]); // To hold raw api response
+  const [fetchedOffers, setFetchedOffers] = useState<Offer[]>([]); // To hold raw api response
+  const [currentFilteredOffers, setCurrentFilteredOffers] = useState<Offer[]>([]);
   const [loanOffers, setLoanOffers] = useState<Offer[]>([]); // for filtering loans
   const [borrowOffers, setBorrowOffers] = useState<Offer[]>([]); // for filtering borrows
   // Pagination state
@@ -40,27 +41,20 @@ const OfferBox: React.FC  = () => { // explicit type on OfferBox is inferred for
   const [maxPageCount, setMaxPageCount] = useState(0);
   const [pageCount, setPageCount] = useState(1);
   const maxOffers = 6;
-  // Sorting/filtering state
-  const [amountFilter, setAmountFilter] = useState('');
-  const [interestFilter, setInterestFilter] = useState('');
-  const [dueFilter, setDueFilter] = useState('');
-  const [riskFilter, setRiskFilter] = useState('');
-  const [offerFilter, setOfferFilter] = useState('');
-
+  // TODO: Integrate axios
   //const api = Axios(); // Note have to do this outside of conditional code blocks and hooks -> HAVING ISSUES WITH REQUESTS NOT GOING OVER NETWORK USING AXIOS
 
   const JWTToken = localStorage.getItem('jwtToken'); 
 
   // Want to fetch and render in a useEffect hook
   useEffect(()=>{
-    console.log("in useEffect on offer box")
     const fetchOffers = () => {
-      console.log("attempting fetch offers")
       Axios.get('http://localhost:4040/api/loan-service/offers/', { headers: {'content-type': 'application/json', "Authorization" : `Bearer ${JWTToken}`}})
         .then((res) => {
-          console.log('full response of offers: ', res);
-          console.log('Got offers res on front-end:', res.data);
-          setOffers(res.data);
+          // console.log('full response of offers: ', res);
+          // console.log('Got offers res on front-end:', res.data);
+          setFetchedOffers(res.data);
+          setCurrentFilteredOffers(res.data); // set both at first as no filters to start
           setMaxPageCount(Math.ceil(res.data.length / maxOffers)); // set max page count
         })
         .catch((error) => {
@@ -74,10 +68,13 @@ const OfferBox: React.FC  = () => { // explicit type on OfferBox is inferred for
   // BUG: I can't figure out why this is firing twice on each page load, keep this bug in mind
   useEffect(()=>{
     // use current count to slice which offers to display
-    setDisplayedOffers(offers.slice((pageCount - 1) * maxOffers, (pageCount - 1) * maxOffers + maxOffers)); // set current pagination based on counts
-    console.log("Current displayed offers on page ", pageCount , ": ");
-    console.log(displayedOffers)
-  }, [pageCount, offers, maxPageCount]);
+    setDisplayedOffers(currentFilteredOffers.slice((pageCount - 1) * maxOffers, (pageCount - 1) * maxOffers + maxOffers)); // set current pagination based on counts
+  }, [pageCount, currentFilteredOffers, maxPageCount]);
+
+  // Update anytime displayed offers is modified due to filter option change
+  useEffect(()=>{
+    console.log("change in displayed offers detected.")
+  }, displayedOffers);
 
   // Pagination helper methods to update state on click
   const incrementPage = () => {
@@ -94,30 +91,100 @@ const OfferBox: React.FC  = () => { // explicit type on OfferBox is inferred for
   }
 
   // helper method to handle incoming inputs to sort offers from FilteringOptions component
-  const sortOffers = ({ sortCommand }: { sortCommand: string}) => {
+  const handleFilter =  (filterType: string) => {
     // Check which filter or sorting control called the function
-    switch(sortCommand){
-      case "":
+    switch(filterType){
+      case "amountAscend":
+        sortByDollarAmountAscending();
         break;
-      case "":
-      break;
-      case "":
-      break;
-      case "":
-      break;
-      case "":
-      break;
+      case "amountDescend":
+        sortByDollarAmountDescending();
+        break;
+      case "interestAscend":
+        sortByInterestAmountAscending();
+        break;
+      case "interestDescend":
+        sortByInterestAmountDescending();
+        break;
+      case "dueAscend":
+        sortByDueDateAscending();
+        break;
+      case "dueDescend":
+        sortByDueDateDescending();
+        break;
+      case "riskLow":
+        filterToRiskLevel("low");
+        break;
+      case "riskHigh":
+        filterToRiskLevel("high");
+        break;
+      case "riskNeutral":
+        filterToRiskLevel("neutral");
+        break;
       default:
         break;
     }
   }
+
+  // Sorting methods
+  const sortByDollarAmountAscending  = () => {
+    const sortedOffers = [...fetchedOffers].sort((a, b) => a.loanAmount - b.loanAmount);
+    setCurrentFilteredOffers(sortedOffers);
+    setDisplayedOffers(sortedOffers.slice((pageCount - 1) * maxOffers, (pageCount - 1) * maxOffers + maxOffers));
+  };
+  const sortByDollarAmountDescending = () => {
+    const sortedOffers = [...fetchedOffers].sort((a, b) => b.loanAmount - a.loanAmount); 
+    setCurrentFilteredOffers(sortedOffers);
+    setDisplayedOffers(sortedOffers.slice((pageCount - 1) * maxOffers, (pageCount - 1) * maxOffers + maxOffers));
+  };
+  const sortByInterestAmountAscending = () => {
+    const sortedOffers = [...fetchedOffers].sort((a, b) => a.interestRate - b.interestRate);
+    setCurrentFilteredOffers(sortedOffers);
+    setDisplayedOffers(sortedOffers.slice((pageCount - 1) * maxOffers, (pageCount - 1) * maxOffers + maxOffers));
+  }
+  const sortByInterestAmountDescending = () => {
+    const sortedOffers = [...fetchedOffers].sort((a, b) => b.interestRate - a.interestRate);
+    setCurrentFilteredOffers(sortedOffers);
+    setDisplayedOffers(sortedOffers.slice((pageCount - 1) * maxOffers, (pageCount - 1) * maxOffers + maxOffers));
+  }
+  // Changed to using localeCompare as we are storing ISO format dates on DB and this works better than Date conversion
+  const sortByDueDateAscending = () => {
+    const sortedOffers = [...fetchedOffers].sort((a, b) => a.dueDate.localeCompare(b.dueDate));
+    setCurrentFilteredOffers(sortedOffers);
+    setDisplayedOffers(sortedOffers.slice((pageCount - 1) * maxOffers, (pageCount - 1) * maxOffers + maxOffers));
+  };
+  const sortByDueDateDescending = () => {
+    const sortedOffers = [...fetchedOffers].sort((a, b) => b.dueDate.localeCompare(a.dueDate));
+    setCurrentFilteredOffers(sortedOffers);
+    setDisplayedOffers(sortedOffers.slice((pageCount - 1) * maxOffers, (pageCount - 1) * maxOffers + maxOffers));
+  };
+  const filterToRiskLevel = (riskLevel: string) => {
+    switch (riskLevel) {
+      case "high":
+        const highRiskOffers = fetchedOffers.filter((offer) => offer.riskLevel === "high-risk");
+        setCurrentFilteredOffers(highRiskOffers);
+        setDisplayedOffers(highRiskOffers.slice((pageCount - 1) * maxOffers, (pageCount - 1) * maxOffers + maxOffers));
+        break;
+      case "low":
+        const lowRiskOffers = fetchedOffers.filter((offer) => offer.riskLevel === "low-risk");
+        setCurrentFilteredOffers(lowRiskOffers);
+        setDisplayedOffers(lowRiskOffers.slice((pageCount - 1) * maxOffers, (pageCount - 1) * maxOffers + maxOffers));
+        break;
+      case "neutral":
+        setCurrentFilteredOffers(fetchedOffers);
+        setDisplayedOffers(fetchedOffers.slice((pageCount - 1) * maxOffers, (pageCount - 1) * maxOffers + maxOffers));
+        break;
+      default:
+        break;
+    }
+  };
 
   return (
     <>
       <div id="dashboard-offers-container" className="mt-2 w-[95%] pl-1 h-screen flex flex-row items-center gap-2">
         {/* Display loaded items in a list on dashboard */}
         <ul id="dashboard-offers" className="h-[95%]  w-1/4 shadow-sm flex flex-col items-center">
-          <FilteringOptions filterHandlerFunction={()=>{console.log("Dummy filter handler fired")}}/>
+          <FilteringOptions filterHandlerFunction={handleFilter}/>
           {/* Map all the loaded entries data into list items */}
           {displayedOffers.map(offer => 
             <OfferBoxItem offer={offer}/>
@@ -140,28 +207,64 @@ const OfferBox: React.FC  = () => { // explicit type on OfferBox is inferred for
 
 export default OfferBox
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// No ssr optimization for this yet
 // Using getServerSideProps so fetch happens each time page loads.
-export async function getServerSideProps() {
-  // console.log("getserver")
-  // try {
-  //     const res = await fetch('http://localhost:4040/api/loan-service/offers/');
-  //     const offers: Offer[] = await res.json();
+// export async function getServerSideProps() {
+//   // console.log("getserver")
+//   // try {
+//   //     const res = await fetch('http://localhost:4040/api/loan-service/offers/');
+//   //     const offers: Offer[] = await res.json();
 
-  //     return {
-  //         props: {
-  //             offers,
-  //         },
-  //     };
-  // } catch (error) {
-  //     console.error('Error fetching Offers data:', error);
-  //     return {
-  //         props: {
-  //             offers: [],
-  //         },
-  //     };
-  // }
-}
+//   //     return {
+//   //         props: {
+//   //             offers,
+//   //         },
+//   //     };
+//   // } catch (error) {
+//   //     console.error('Error fetching Offers data:', error);
+//   //     return {
+//   //         props: {
+//   //             offers: [],
+//   //         },
+//   //     };
+//   // }
+// }
 
+
+
+
+
+
+
+
+
+
+
+
+
+// Table library usage scrapped for now, way data is presented was too custom 
 // 
  // <Table aria-label="Current" id="dashboard-offers-container" className="mt-2 w-full pl-1 flex items-center justify-center space-evenly h-screen">
     //   <TableHeader>

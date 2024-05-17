@@ -17,13 +17,13 @@ interface Offer{
   userId: string,
   loanAmount: number,
   interestRate: number,
-  dueDate: Date,
-  dateOfIssue: Date, // Generated
+  dueDate: string,
+  dateOfIssue: string, // Generated
   loanTerm: number,
   numberOfInstallments: number,
   isLoan: boolean, // Set by boolean
   riskLevel: string, // Generated for borrowing case, set by input for lending case
-  expiryDate: Date
+  expiryDate: string
 }
 
 const MakeNewOffer = () => {

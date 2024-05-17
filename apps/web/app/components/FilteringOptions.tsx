@@ -5,7 +5,11 @@ import { MdOutlineDangerous } from "react-icons/md";
 import { motion, useAnimationControls, useAnimation } from 'framer-motion';
 import { TbTriangleInvertedFilled } from "react-icons/tb";
 
-const FilteringOptions = ({ filterHandlerFunction }: { filterHandlerFunction: Function}) => {
+interface FilteringOptionsProps {
+  filterHandlerFunction: (filterType: string) => void;
+}
+
+const FilteringOptions: React.FC<FilteringOptionsProps> = ({ filterHandlerFunction }) => {
   // To track current state of filter/sorting options
   const [amountState, setAmountState] = useState("descending");
   const [interestState, setInterestState] = useState("descending");
@@ -26,29 +30,37 @@ const FilteringOptions = ({ filterHandlerFunction }: { filterHandlerFunction: Fu
     switch (controllerName) {
       case 'amount':
         if (amountState === 'descending') {
+          console.log("called ascend on amount")
           setAmountState('ascending');
           amountController.start('ascending');
+          filterHandlerFunction("amountAscend"); // TODO: FIll this in with handler call
         } else {
+          console.log("called descend on amount")
           setAmountState('descending');
           amountController.start('descending');
+          filterHandlerFunction("amountDescend"); // TODO: FIll this in with handler call
         }
         break;
       case 'interest':
         if (interestState === 'descending') {
           setInterestState('ascending');
           interestController.start('ascending');
+          filterHandlerFunction("interestAscend"); // TODO: FIll this in with handler call
         } else {
           setInterestState('descending');
           interestController.start('descending');
+          filterHandlerFunction("interestDescend"); // TODO: FIll this in with handler call
         }
         break;
       case 'due':
         if (dueState === 'descending') {
           setDueState('ascending');
           dueController.start('ascending');
+          filterHandlerFunction("dueAscend"); // TODO: FIll this in with handler call
         } else {
           setDueState('descending');
           dueController.start('descending');
+          filterHandlerFunction("dueDescend"); // TODO: FIll this in with handler call
         }
         break;
       case 'risk':
@@ -64,18 +76,22 @@ const FilteringOptions = ({ filterHandlerFunction }: { filterHandlerFunction: Fu
         if(riskState === 'high'){
           setRiskState("neutral")
           riskController.start("neutral")
+          filterHandlerFunction("");
         } else {
           setRiskState("high")
           riskController.start("high")
+          filterHandlerFunction("riskHigh");
         }
         break;
       case 'low':
         if(riskState === 'low'){
           setRiskState("neutral")
           riskController.start("neutral")
+          filterHandlerFunction("riskNeutral");
         } else {
           setRiskState("low")
           riskController.start("low")
+          filterHandlerFunction("riskLow");
         }
         break;
       default:
