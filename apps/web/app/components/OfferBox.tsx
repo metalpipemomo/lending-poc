@@ -294,7 +294,7 @@ const OfferBox: React.FC  = () => { // explicit type on OfferBox is inferred for
         </ul>
 
         <div className="w-3/4 h-full">
-          <DashboardGraphics/>
+          <DashboardGraphics currentOffers={currentFilteredOffers}/>
         </div>
       </div>
     </>
