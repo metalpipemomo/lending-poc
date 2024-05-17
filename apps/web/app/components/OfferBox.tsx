@@ -91,13 +91,13 @@ const OfferBox: React.FC  = () => { // explicit type on OfferBox is inferred for
     <>
       <div id="dashboard-offers-container" className="mt-2 w-[95%] pl-1 h-screen flex flex-row items-center gap-2">
         {/* Display loaded items in a list on dashboard */}
-        <ul id="dashboard-offers" className="h-[95%]  w-1/4 shadow-sm">
-          <FilteringOptions />
+        <ul id="dashboard-offers" className="h-[95%]  w-1/4 shadow-sm flex flex-col items-center">
+          <FilteringOptions filterHandlerFunction={()=>{console.log("Dummy filter handler fired")}}/>
           {/* Map all the loaded entries data into list items */}
           {displayedOffers.map(offer => 
             <OfferBoxItem offer={offer}/>
           )}
-          <div className="">
+          <div className="text-lg">
             <div className="w-full h-fit text-white cursor-pointer flex flex-row items-center justify-center gap-4" >
               <span className="inline-block" onClick={decrementPage}><FaArrowAltCircleLeft /></span><span className="inline-block text-white">{pageCount}/{maxPageCount}</span><span className="inline-block" onClick={incrementPage}><FaArrowAltCircleRight /></span>
             </div>
