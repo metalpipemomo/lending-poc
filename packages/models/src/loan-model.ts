@@ -37,7 +37,7 @@ const schemaDefinition = {
     type: "String",
     required: true
   },
-  riskLevel: { // "low-risk" "high-risk" "black-listed" 
+  riskLevel: { // "low, medium, high"
     type: "String",
     required: true
   },
