@@ -12,6 +12,7 @@ const FilteringOptions = ({ filterHandlerFunction }: { filterHandlerFunction: Fu
   const [dueState, setDueState] = useState("descending");
   const [riskState, setRiskState] = useState("closed");
   const [riskPopState, setRiskPopState] = useState("closed");
+  const [riskIsOpen, setRiskIsOpen] = useState(false);
 
   // Animation controllers for flipping arrows according to sorting state
   const amountController = useAnimation();
@@ -20,7 +21,7 @@ const FilteringOptions = ({ filterHandlerFunction }: { filterHandlerFunction: Fu
   const riskController = useAnimation();
   const riskSelectionController = useAnimation();
 
-  // Switch board for firing different anims based on UI state.
+  // State and anim transition handling for filtering/sorting inputs
   const processAnim = (controllerName: string) => {
     switch (controllerName) {
       case 'amount':
@@ -118,7 +119,11 @@ const FilteringOptions = ({ filterHandlerFunction }: { filterHandlerFunction: Fu
         </motion.span>
         <motion.span className="inline-block cursor-pointer text-xl">Due by</motion.span>
       </motion.span>
-      <motion.span id="dashboard-offers-risk-filter" className="relative w-1/4 text-white flex flex-row items-center justify-center" onClick={()=>{processAnim("risk")}}>
+      <motion.span id="dashboard-offers-risk-filter" 
+        className="relative w-1/4 pt-9 mb-8 text-white flex flex-row items-center justify-center" 
+          onHoverStart={riskIsOpen ? ()=>{} : ()=>{processAnim("risk"); setRiskIsOpen(true)}} 
+          onHoverEnd={riskIsOpen ? ()=>{processAnim("risk"); setRiskIsOpen(false)} : ()=> {}}
+      >
         <motion.span 
           className="absolute w-full h-fit bg-slate-50 bottom-8 rounded-xl flex flex-row justify-evenly z-10"
           variants={riskSelectionPopupVariant}
@@ -129,14 +134,14 @@ const FilteringOptions = ({ filterHandlerFunction }: { filterHandlerFunction: Fu
           <span className="text-2xl text-white absolute top-3 z-0"><TbTriangleInvertedFilled /></span>
         </motion.span>
         <motion.span 
-          className="inline-block pr-1 text-2xl cursor-pointer"
+          className="inline-block pr-1 text-2xl"
           variants={riskSelectionVariant}
           initial="neutral"
           animate={riskController}
         >
           <MdOutlineDangerous />
         </motion.span>
-        <motion.span className="inline-block cursor-pointer text-xl">Risk</motion.span>
+        <motion.span className="inline-block text-xl">Risk</motion.span>
       </motion.span>
     </motion.div>
   )
