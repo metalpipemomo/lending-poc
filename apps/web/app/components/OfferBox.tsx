@@ -8,6 +8,8 @@ import { useState, useEffect } from 'react';
 // import Axios from "../../lib/AxiosBase"; // for api calls
 import Axios from 'axios';
 import OfferBoxItem from '../components/OfferBoxItem';
+import { FaArrowAltCircleLeft } from "react-icons/fa";
+import { FaArrowAltCircleRight } from "react-icons/fa";
 //import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@nextui-org/table";
 
 // Define an interface for explicit TS type definition according to schema
@@ -28,6 +30,11 @@ interface Offer{
 // React component for an offer loaded from the DB. Displayed on dashboard.
 const OfferBox: React.FC  = () => { // explicit type on OfferBox is inferred for the prop
   const [offers, setOffers] = useState<Offer[]>([]);
+  const [displayedOffers, setDisplayedOffers] = useState<Offer[]>([]);
+  const [maxPageCount, setMaxPageCount] = useState(0);
+  const [pageCount, setPageCount] = useState(1);
+  const maxOffers = 6;
+
   //const api = Axios(); // Note have to do this outside of conditional code blocks and hooks -> HAVING ISSUES WITH REQUESTS NOT GOING OVER NETWORK USING AXIOS
 
   const JWTToken = localStorage.getItem('jwtToken'); 
@@ -42,6 +49,7 @@ const OfferBox: React.FC  = () => { // explicit type on OfferBox is inferred for
           console.log('full response of offers: ', res);
           console.log('Got offers res on front-end:', res.data);
           setOffers(res.data);
+          setMaxPageCount(Math.ceil(res.data.length / maxOffers)); // set max page count
         })
         .catch((error) => {
           console.error('Error fetching offers on front-end:', error.message);
@@ -50,16 +58,49 @@ const OfferBox: React.FC  = () => { // explicit type on OfferBox is inferred for
     fetchOffers();
   }, []); // No dependency only running on load/mount
 
+  // Another useEffect for paginating
+  // BUG: I can't figure out why this is firing twice on each page load, keep this bug in mind
+  useEffect(()=>{
+    // use current count to slice which offers to display
+    setDisplayedOffers(offers.slice((pageCount - 1) * maxOffers, (pageCount - 1) * maxOffers + maxOffers)); // set current pagination based on counts
+    console.log("Current displayed offers on page ", pageCount , ": ");
+    console.log(displayedOffers)
+  }, [pageCount, offers, maxPageCount]);
+
+
+  const incrementPage = () => {
+    if(pageCount + 1 <= maxPageCount){
+      setPageCount(pageCount + 1);
+    }
+  }
+  const decrementPage = () => {
+    if(pageCount - 1 <= 0){
+      setPageCount(1);
+    } else{
+      setPageCount(pageCount-1);
+    }
+  }
+
   return (
-    <div id="dashboard-offers-container" className="flex items-center mt-2 w-full pl-1 h-screen">
-      {/* Display loaded items in a list on dashboard */}
-      <ul id="dashboard-offers" className="w-10/12 shadow-sm flex flex-col items-center justify-center">
-        {/* Map all the loaded entries data into list items */}
-        {offers.map(offer => 
-          <OfferBoxItem offer={offer}/>
-        )}
-      </ul>
-    </div>
+    <>
+      <div id="dashboard-offers-container" className="mt-2 w-full pl-1 h-screen border-red-700 border-2">
+        {/* Display loaded items in a list on dashboard */}
+        <ul id="dashboard-offers" className="h-full w-full shadow-sm justify-center border-black border-2">
+          {/* Map all the loaded entries data into list items */}
+          {displayedOffers.map(offer => 
+            <OfferBoxItem offer={offer}/>
+          )}
+          <div className="">
+            <div className="w-full h-fit text-white cursor-pointer border-yellow-700 border flex flex-row justify-evenly" >
+              <span className="inline-block" onClick={decrementPage}><FaArrowAltCircleLeft /></span><span className="inline-block text-white">{pageCount}/{maxPageCount}</span><span className="inline-block" onClick={incrementPage}><FaArrowAltCircleRight /></span>
+            </div>
+          </div>
+        </ul>
+      </div>
+      
+    </>
+    
+    
   )
 }
 
