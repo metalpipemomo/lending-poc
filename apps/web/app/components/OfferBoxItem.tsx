@@ -22,7 +22,7 @@ interface Offer{
 const OfferBoxItem = ({offer} : {offer: Offer}) => {
 
   return (
-    <li key={offer._id.toString()} className="mb-2 w-[28%] px-2 py-2 text-xs text-slate-700 bg-gray-50 rounded-lg relative">
+    <li key={offer._id.toString()} className="mb-2 w-full px-2 py-2 text-xs text-slate-700 bg-gray-50 rounded-lg relative">
       <div className="inline-block">
         <h1 className="text-2xl ">{offer.isLoan ? "Loan Offer" : "Borrow Offer"}</h1>
         <span className="text-2xl"><span className="font-bold pr-0.5"> $</span>{offer.loanAmount.toString()} </span>

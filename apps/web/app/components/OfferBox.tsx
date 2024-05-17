@@ -8,9 +8,11 @@ import { useState, useEffect } from 'react';
 // import Axios from "../../lib/AxiosBase"; // for api calls
 import Axios from 'axios';
 import OfferBoxItem from '../components/OfferBoxItem';
+import DashboardGraphics from './DashboardGraphics';
+import FilteringOptions from './FilteringOptions';
 import { FaArrowAltCircleLeft } from "react-icons/fa";
 import { FaArrowAltCircleRight } from "react-icons/fa";
-//import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@nextui-org/table";
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@nextui-org/table";
 
 // Define an interface for explicit TS type definition according to schema
 interface Offer{
@@ -29,8 +31,12 @@ interface Offer{
 
 // React component for an offer loaded from the DB. Displayed on dashboard.
 const OfferBox: React.FC  = () => { // explicit type on OfferBox is inferred for the prop
-  const [offers, setOffers] = useState<Offer[]>([]);
-  const [displayedOffers, setDisplayedOffers] = useState<Offer[]>([]);
+  // Pulled data state
+  const [offers, setOffers] = useState<Offer[]>([]); // To hold raw api response
+  const [loanOffers, setLoanOffers] = useState<Offer[]>([]); // for filtering loans
+  const [borrowOffers, setBorrowOffers] = useState<Offer[]>([]); // for filtering borrows
+  // Pagination state
+  const [displayedOffers, setDisplayedOffers] = useState<Offer[]>([]); // for displaying current paginated results
   const [maxPageCount, setMaxPageCount] = useState(0);
   const [pageCount, setPageCount] = useState(1);
   const maxOffers = 6;
@@ -83,21 +89,24 @@ const OfferBox: React.FC  = () => { // explicit type on OfferBox is inferred for
 
   return (
     <>
-      <div id="dashboard-offers-container" className="mt-2 w-full pl-1 h-screen border-red-700 border-2">
+      <div id="dashboard-offers-container" className="mt-2 w-[95%] pl-1 h-screen flex flex-row items-center gap-2">
         {/* Display loaded items in a list on dashboard */}
-        <ul id="dashboard-offers" className="h-full w-full shadow-sm justify-center border-black border-2">
+        <ul id="dashboard-offers" className="h-[95%]  w-1/4 shadow-sm">
+          <FilteringOptions />
           {/* Map all the loaded entries data into list items */}
           {displayedOffers.map(offer => 
             <OfferBoxItem offer={offer}/>
           )}
           <div className="">
-            <div className="w-full h-fit text-white cursor-pointer border-yellow-700 border flex flex-row justify-evenly" >
+            <div className="w-full h-fit text-white cursor-pointer flex flex-row items-center justify-center gap-4" >
               <span className="inline-block" onClick={decrementPage}><FaArrowAltCircleLeft /></span><span className="inline-block text-white">{pageCount}/{maxPageCount}</span><span className="inline-block" onClick={incrementPage}><FaArrowAltCircleRight /></span>
             </div>
           </div>
         </ul>
+        <div className="w-3/4 h-full">
+          <DashboardGraphics/>
+        </div>
       </div>
-      
     </>
     
     
