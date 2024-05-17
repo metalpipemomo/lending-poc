@@ -69,6 +69,7 @@ const OfferBox: React.FC  = () => { // explicit type on OfferBox is inferred for
   useEffect(()=>{
     // use current count to slice which offers to display
     setDisplayedOffers(currentFilteredOffers.slice((pageCount - 1) * maxOffers, (pageCount - 1) * maxOffers + maxOffers)); // set current pagination based on counts
+    setMaxPageCount(Math.ceil(currentFilteredOffers.length / maxOffers)); // set max page count
   }, [pageCount, currentFilteredOffers, maxPageCount]);
 
   // Update anytime displayed offers is modified due to filter option change
