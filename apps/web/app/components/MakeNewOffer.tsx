@@ -10,6 +10,7 @@ import { DevTool } from "@hookform/devtools";
 import Axios from 'axios';
 import { DefaultFormValues } from 'react-phone-number-input/react-hook-form';
 import { useRouter } from 'next/navigation'
+import jwt from 'jsonwebtoken';
 
 // Data structure for offer entered to DB which is mix of user inputted fields and computer generated fields
 interface Offer{
@@ -72,10 +73,30 @@ const MakeNewOffer = () => {
 
     let postData: Offer;
 
+    // GET HELP WITH DECODING AND ATTACHING USER ID TO POST REQUESTS
+  //   // Get token to pass in headers for auth
+  //   const JWTToken = localStorage.getItem('jwtToken');
+  //   console.log("token test: ")
+  //   console.log(JWTToken);
+  //   // get user id from JWTToken 
+  //   // const tokenUserId = 
+
+  //   try {
+  //     if (JWTToken && process.env.SECRET_KEY) {
+  //         const decoded = jwt.verify(JWTToken, process.env.SECRET_KEY);
+  //         const extractedUserId = decoded.id;
+  //         console.log('Extracted User ID:', extractedUserId);
+  //     } else {
+  //         console.error('JWTToken is null or undefined.');
+  //     }
+  // } catch (error) {
+  //     console.error('Error decoding token:', error.message);
+  // }
+
     // Distinguish what type of offer this is and generate non-inputted fields to complete post data obj
     if(isLoan){
       postData = {
-        userId: "isLoanPostedFromFront",
+        userId: "loanOfferPostedWithoutUserID",
         loanAmount: parseInt(loanAmount),
         interestRate: parseFloat(interestRate),
         dueDate: dueDate,
@@ -89,7 +110,7 @@ const MakeNewOffer = () => {
     } else{
       const rlevel = setRiskLevel({ desiredRisk: "random" }); // use generated risk string in borrow offer case -> for now using dummy method instead of a risk service
       postData = {
-        userId: "isBorrowPostedFromFront",
+        userId: "borrowOfferPostedWithoutUserID",
         loanAmount: parseInt(loanAmount),
         interestRate: parseFloat(interestRate),
         dueDate: dueDate,
@@ -101,8 +122,6 @@ const MakeNewOffer = () => {
         expiryDate: expiryDate
       } 
     }
-
-    const JWTToken = localStorage.getItem('jwtToken');
 
     Axios.post("http://localhost:4040/api/loan-service/offers/", postData, { headers: {'content-type': 'application/json', "Authorization" : `Bearer ${JWTToken}`}})
     .then((e) => {
