@@ -40,6 +40,12 @@ const OfferBox: React.FC  = () => { // explicit type on OfferBox is inferred for
   const [maxPageCount, setMaxPageCount] = useState(0);
   const [pageCount, setPageCount] = useState(1);
   const maxOffers = 6;
+  // Sorting/filtering state
+  const [amountFilter, setAmountFilter] = useState('');
+  const [interestFilter, setInterestFilter] = useState('');
+  const [dueFilter, setDueFilter] = useState('');
+  const [riskFilter, setRiskFilter] = useState('');
+  const [offerFilter, setOfferFilter] = useState('');
 
   //const api = Axios(); // Note have to do this outside of conditional code blocks and hooks -> HAVING ISSUES WITH REQUESTS NOT GOING OVER NETWORK USING AXIOS
 
@@ -73,7 +79,7 @@ const OfferBox: React.FC  = () => { // explicit type on OfferBox is inferred for
     console.log(displayedOffers)
   }, [pageCount, offers, maxPageCount]);
 
-
+  // Pagination helper methods to update state on click
   const incrementPage = () => {
     if(pageCount + 1 <= maxPageCount){
       setPageCount(pageCount + 1);
@@ -84,6 +90,25 @@ const OfferBox: React.FC  = () => { // explicit type on OfferBox is inferred for
       setPageCount(1);
     } else{
       setPageCount(pageCount-1);
+    }
+  }
+
+  // helper method to handle incoming inputs to sort offers from FilteringOptions component
+  const sortOffers = ({ sortCommand }: { sortCommand: string}) => {
+    // Check which filter or sorting control called the function
+    switch(sortCommand){
+      case "":
+        break;
+      case "":
+      break;
+      case "":
+      break;
+      case "":
+      break;
+      case "":
+      break;
+      default:
+        break;
     }
   }
 
