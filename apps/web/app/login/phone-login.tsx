@@ -119,8 +119,8 @@ export default function PhoneLogin() {
                                         disabled={isSubmitting}
                                         className={`w-9/12 py-3 text-sm font-semibold rounded-full shadow-sm ${
                                             errors.phoneNumber
-                                                ? 'bg-gray-200 text-gray-400'
-                                                : 'bg-black text-white hover:opacity-95 focus:outline-none focus:ring-2'
+                                                ? 'border border-gray-200 bg-gray-200 text-gray-400'
+                                                : 'bg-black border border-black text-white hover:opacity-95 hover:bg-gray-300 hover:text-gray-800 hover:border-gray-800 focus:outline-none focus:ring-2'
                                         } `}>
                                         Log in
                                     </button>
