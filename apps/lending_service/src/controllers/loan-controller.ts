@@ -1,5 +1,5 @@
 // Segregates db I/O logic from the routes and models 
-import { LoanModel, Loan } from '@repo/models';
+import { UserModel, LoanModel, Loan } from '@repo/models';
 // May need to validate things later
 import mongoose from 'mongoose';
 import { Request, Response } from "express";
@@ -62,7 +62,13 @@ export const createLoan = async (req: Request, res: Response) => {
   try{
 
     if (loanData.isLoan === 'false') {
-      const creditScore = 650;  // TO BE REPLACED WITH ACTUAL CREDIT SCORE OBTAINING
+      const user = await UserModel.findById(loanData.userId);
+
+      if (!user) {
+        return res.status(404).json({ error: 'User not found.' });
+      }
+
+      const creditScore = user.creditScore;
       const riskLevel = calculateRiskScore(loanData.loanAmount, creditScore)
       loanData.riskLevel = riskLevel
     }
@@ -95,7 +101,13 @@ export const updateLoan = async (req: Request, res: Response) => {
     // Params for function: (idToUpdate, updateData, options)
     // Returns updated document on DB if successful
     if (dataToUpdate.isLoan === 'false') {
-      const creditScore = 650;  // TO BE REPLACED WITH ACTUAL CREDIT SCORE OBTAINING
+      const user = await UserModel.findById(dataToUpdate.userId);
+
+      if (!user) {
+        return res.status(404).json({ error: 'User not found.' });
+      }
+
+      const creditScore = user.creditScore;
       const riskLevel = calculateRiskScore(dataToUpdate.loanAmount, creditScore)
       dataToUpdate.riskLevel = riskLevel
     }
