@@ -4,6 +4,7 @@ module.exports = {
         './app/**/*.{js,ts,jsx,tsx,mdx}',
         './pages/**/*.{js,ts,jsx,tsx,mdx}',
         './components/**/*.{js,ts,jsx,tsx,mdx}',
+        "./app/components/**/*.{js,ts,jsx,tsx,mdx}", // added for app router approach since we have both for now: Dashboard and new offer pages are using app-router instead of page-router
 
         // Or if using `src` directory:
         './src/**/*.{js,ts,jsx,tsx,mdx}'
