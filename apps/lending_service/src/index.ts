@@ -9,19 +9,20 @@ import fs from 'fs';
 import path from 'path';
 
 
-import matchRoutes from './routes/matches';
 import { AuthenticateRoutes } from "./controllers/auth-controller";
+import rateLimiter from './rate-limiter';
 
+import matchRoutes from './routes/matches';
 import loanRoutes from './routes/loans';
 import userRoutes from './routes/auth';
 
 declare global {
   namespace Express {
-      interface Request {
-          user?: {
-              id: string
-          };
-      }
+    interface Request {
+      user?: {
+        id: string
+      };
+    }
   }
 }
 
@@ -29,7 +30,11 @@ const app = express();
 const port = process.env.PORT || 4041;
 
 // Request configuration middleware
-app.use(express.json()); 
+app.use(rateLimiter({
+  windowMs: 15 * 60 * 1000,
+  maxReqs: 100
+}));
+app.use(express.json());
 app.use(cors());
 
 
@@ -65,11 +70,20 @@ app.get('/', (req: Request, res: Response) => {
 
 // DB connection with connection string and use the options as second arg
 mongoose.connect(process.env.MONGO_URI!, { dbName: 'Loans' }) // async returns a promise so use .then to fire a method when complete and .catch method for errors
-  .then(()=>{
+  .then(() => {
     // Don't want to accept requests until we have connected, so put the listener here.
     // listen for requests on a certain port number
-    app.listen(port, () =>{
-      console.log(`Server listening on https://localhost:${port}/`);
-    });
+    // Check for production build mode, in this case do not host express app locally
+    // Later will add deployment URLs in Vercel env variables so api calls work in production
+    if(process.env.NODE_ENV === 'production'){
+      console.log('Production mode detected. Express app will not be hosted locally as Vercel requires a deployment URL to access APIs in production.')
+      console.log('Still have to deploy backend on a platform to get production builds working.')
+    } else if (process.env.NODE_ENV === 'development') {
+      // Only want to work on local host in dev mode
+      app.listen(port, () =>{
+        console.log("Development mode detected.")
+        console.log("Express server is running and connected to MongoDB on port " + port);
+      });
+    }
   })
-  .catch((error)=>{console.log(error)})
+  .catch((error) => { console.log(error) })

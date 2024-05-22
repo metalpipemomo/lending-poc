@@ -12,7 +12,8 @@ export default function AuthPage() {
     return (
         <ClientOnly>
             <div className='relative overflow-hidden '>
-                <div className='absolute inset-0 z-0 w-full bg-black opacity-40'></div>
+                {/* Adding a global bg instead in global.css, this approach will make other colors on components on top look off */}
+                {/* <div className='absolute inset-0 z-0 w-full bg-black opacity-40'></div> */}
                 <div className='max-w-[2520px] flex flex-col justify-center items-center min-h-screen'>
                     {loginByPhone ? <PhoneLogin /> : <EmailLogin />}
                     <div className='flex items-center justify-center my-2 z-30'>

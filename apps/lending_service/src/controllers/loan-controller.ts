@@ -67,6 +67,8 @@ export const createLoan = async (req: Request, res: Response) => {
       loanData.riskLevel = riskLevel
     }
     // Make a new document entry using the Loan mongoose schema using the posted loanData
+    console.log("loan data in tr catch: ")
+    console.log(loanData)
     const newLoanEntry = new LoanModel(loanData); // newLoanEntry is the returned
     // Asynchronously save the loanData to the mongoDB collection, returns the saved data entry with generated mongoID.
     const savedLoanEntry = await newLoanEntry.save();
