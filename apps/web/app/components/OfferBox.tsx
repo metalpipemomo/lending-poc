@@ -143,6 +143,9 @@ const OfferBox: React.FC  = () => { // explicit type on OfferBox is inferred for
           filterToOfferType("loan");
         }
         break;
+        case "all":
+          showAllOffers();
+          break;
       default:
         break;
     }
@@ -199,6 +202,13 @@ const OfferBox: React.FC  = () => { // explicit type on OfferBox is inferred for
       default:
         break;
     }
+  };
+  // Show All function to sort by dateOfIssue from newest to oldest
+  const showAllOffers = () => {
+    const sortedOffers = [...fetchedOffers].sort((a, b) => b.dateOfIssue.localeCompare(a.dateOfIssue));
+    setCurrentFilteredOffers(sortedOffers);
+    setDisplayedOffers(sortedOffers.slice((pageCount - 1) * maxOffers, (pageCount - 1) * maxOffers + maxOffers));
+    setCurrOfferType("neutral");
   };
 
    // State and anim transition handling for filtering/sorting inputs
