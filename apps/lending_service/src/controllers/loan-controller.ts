@@ -1,8 +1,9 @@
 // Segregates db I/O logic from the routes and models 
-import { LoanModel, Loan } from '@repo/models';
+import { UserModel, LoanModel, Loan } from '@repo/models';
 // May need to validate things later
 import mongoose from 'mongoose';
 import { Request, Response } from "express";
+import calculateRiskScore from '../util/calculateRisk'
 
 // ** REMEMBER WE ARE TREATING LOAN REQUESTS AND LOAN OFFERS AS THE SAME SCHEMA BUT WITH BOOLEAN TO DISTINGUISH
 // So both loan request/loan offer = loan data entry, we distinguish which one an entry is with the isLoan parameter
@@ -59,6 +60,18 @@ export const createLoan = async (req: Request, res: Response) => {
   const loanData = req.body;
 
   try{
+
+    if (loanData.isLoan === 'false') {
+      const user = await UserModel.findById(loanData.userId);
+
+      if (!user) {
+        return res.status(404).json({ error: 'User not found.' });
+      }
+
+      const creditScore = user.creditScore;
+      const riskLevel = calculateRiskScore(loanData.loanAmount, creditScore)
+      loanData.riskLevel = riskLevel
+    }
     // Make a new document entry using the Loan mongoose schema using the posted loanData
     console.log("loan data in tr catch: ")
     console.log(loanData)
@@ -87,6 +100,17 @@ export const updateLoan = async (req: Request, res: Response) => {
     // Use mongoose findByIdAndUpdate function
     // Params for function: (idToUpdate, updateData, options)
     // Returns updated document on DB if successful
+    if (dataToUpdate.isLoan === 'false') {
+      const user = await UserModel.findById(dataToUpdate.userId);
+
+      if (!user) {
+        return res.status(404).json({ error: 'User not found.' });
+      }
+
+      const creditScore = user.creditScore;
+      const riskLevel = calculateRiskScore(dataToUpdate.loanAmount, creditScore)
+      dataToUpdate.riskLevel = riskLevel
+    }
     const updatedLoanResult = await LoanModel.findByIdAndUpdate(id, dataToUpdate, options);
 
     if(!updatedLoanResult){ // No loan entry found case
