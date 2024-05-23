@@ -2,8 +2,9 @@ import { LoanModel, Match, MatchModel } from '@repo/models'; // Import your mode
 
 export async function findMatches() {
   // Fetch all loan offers and borrowing requests
-  const loanOffers = await LoanModel.find({ isLoan: true });
-  const borrowRequests = await LoanModel.find({ isLoan: false });
+  const loanOffers = await LoanModel.find({ isLoan: "true" });
+  const borrowRequests = await LoanModel.find({ isLoan: "false" });
+  
 
   const matches: Match[] = [];
 
@@ -28,7 +29,9 @@ export async function findMatches() {
       }
     });
   });
+  console.log('Matches to be inserted:', matches);
   await MatchModel.insertMany(matches);
+  console.log(`${matches.length} matches inserted into the database.`);
 }
 
 
