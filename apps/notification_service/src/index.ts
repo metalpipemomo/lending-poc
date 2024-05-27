@@ -3,19 +3,19 @@ import { Kafka } from 'kafkajs';
 
 // Email configuration
 const transporter = nodemailer.createTransport({
-    service: 'Gmail', // you can use other services like 'Yahoo', 'Outlook', etc.
+    service: 'Gmail',
     auth: {
-      user: 'lending.poc.dev@gmail.com',
-      pass: 'bsox kqdg wphi vbmy', // app password
+        user: 'lending.poc.dev@gmail.com',
+        pass: 'bsox kqdg wphi vbmy', // app password
     },
-  });
+});
 
-const sendEmail = async (to: string, subject: string, text: string) => {
+const sendEmail = async (to: string, subject: string, html: string) => {
     const mailOptions = {
-        from: 'lending.poc.dev@gmail.com',
+        from: 'noreply <lending.poc.dev@gmail.com>',
         to: to,
         subject: subject,
-        text: text,
+        html: html,
     };
 
     try {
@@ -29,7 +29,7 @@ const sendEmail = async (to: string, subject: string, text: string) => {
 // Kafka configuration
 const kafka = new Kafka({
     clientId: 'notification_service',
-    brokers: ['localhost:9093'], 
+    brokers: ['localhost:9093'],
 });
 
 const consumer = kafka.consumer({ groupId: 'email-group' });
@@ -48,10 +48,35 @@ const run = async () => {
             try {
                 const data = JSON.parse(message.value?.toString() || '');
 
-                if (data && data.firstName && data.email) {
+                if (data && data.firstName && data.email && data.amount && data.rate && data.term) {
                     const subject = 'Lendr Matches Found!';
-                    const text = `Hello ${data.firstName},\nyou have some matches at Lendr! Head over to the website to check it out.`;
-                    await sendEmail(data.email, subject, text);
+                    const html = `
+                        <div style="font-family: Arial, sans-serif; line-height: 1.6; padding: 20px; margin: 10px;">
+                            <h2>Hello ${data.firstName},</h2>
+                            <p>We are excited to inform you that we have found some matched offers for you at Lendr! Here are the details of the matched offer:</p>
+                            <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                                <tr>
+                                    <th style="border: 1px solid #ddd; padding: 8px;">Detail</th>
+                                    <th style="border: 1px solid #ddd; padding: 8px;">Value</th>
+                                </tr>
+                                <tr>
+                                    <td style="border: 1px solid #ddd; padding: 8px;">Amount</td>
+                                    <td style="border: 1px solid #ddd; padding: 8px;">${data.amount}</td>
+                                </tr>
+                                <tr>
+                                    <td style="border: 1px solid #ddd; padding: 8px;">Rate</td>
+                                    <td style="border: 1px solid #ddd; padding: 8px;">${data.rate}%</td>
+                                </tr>
+                                <tr>
+                                    <td style="border: 1px solid #ddd; padding: 8px;">Term</td>
+                                    <td style="border: 1px solid #ddd; padding: 8px;">${data.term} months</td>
+                                </tr>
+                            </table>
+                            <p>Please <a href="lending-poc-web.vercel.app">visit our website</a> to review the details and proceed further.</p>
+                            <p>Best regards,<br/>The Lendr Team</p>
+                        </div>
+                    `;
+                    await sendEmail(data.email, subject, html);
                 } else {
                     console.error('Invalid message format:', message.value);
                 }
