@@ -3,7 +3,10 @@ import { Kafka } from 'kafkajs'; // Import kafkajs
 
 type MatchMessage = {
   firstName: string,
-  email: string
+  email: string,
+  amount: number,
+  rate: number,
+  term: number
 };
 
 // Initialize Kafka producer
@@ -21,7 +24,7 @@ export async function findMatches() {
   const borrowRequests = await LoanModel.find({ isLoan: "false" });
 
   const matches: Match[] = [];
-  const emails: MatchMessage[] = [];
+  const messages: MatchMessage[] = [];
 
   for (const loanOffer of loanOffers) {
     for (const borrowRequest of borrowRequests) {
@@ -46,13 +49,19 @@ export async function findMatches() {
           const lender = await UserModel.findOne({ id: loanOffer.userId });
           const borrower = await UserModel.findOne({ id: borrowRequest.userId });
           if (lender && borrower) {
-            emails.push({
+            messages.push({
               firstName: lender.firstName,
-              email: lender.email
+              email: lender.email,
+              amount: borrowRequest.loanAmount,
+              rate: borrowRequest.interestRate,
+              term: borrowRequest.loanTerm
             });
-            emails.push({
+            messages.push({
               firstName: borrower.firstName,
-              email: borrower.email
+              email: borrower.email,
+              amount: loanOffer.loanAmount,
+              rate: loanOffer.interestRate,
+              term: loanOffer.loanTerm
             });
           }
         } catch (error) {
@@ -65,30 +74,22 @@ export async function findMatches() {
   await MatchModel.insertMany(matches);
   console.log(`${matches.length} matches inserted into the database.`);
 
-  for (const email of emails) {
-    console.log(`sending message ${ JSON.stringify(email) }`)
+  for (const message of messages) {
+    console.log(`sending message ${ JSON.stringify(message) }`)
     await producer.send({
       topic: 'test-topic',
       messages: [
-        { value: JSON.stringify(email) }
+        { value: JSON.stringify(message) }
       ]
     });
   }
-  // for (const match of matches) {
-  //   await producer.send({
-  //     topic: 'test-topic',
-  //     messages: [
-  //       { value: JSON.stringify(match) }
-  //     ]
-  //   });
-  // }
 
   console.log('All matches sent to Kafka broker.');
 
   await producer.disconnect();
 }
 
-
+// sample matches:
 // {
 //   "$or": [
 //     { "_id": ObjectId("664665d66b0e4b833003c98b") },
