@@ -1,6 +1,7 @@
 // TSX for creating loan borrows and offers
 import React from 'react';
-import Link from 'next/link'
+import Link from 'next/link';
+import MatchBox from '../../components/MatchBox';
 import '../../../public/styles/tailwind.css';
 
 // TODO: Finish matches page UI
@@ -17,6 +18,7 @@ const ViewMatchesPage = () => {
           <Link href="/dashboard" id="matches-link-back" className="w-[142px] px-3 py-2 text-sm font-semibold rounded-full shadow-sm border border-black bg-black text-center text-white hover:bg-gray-300 hover:text-gray-800 hover:border-gray-800 focus:outline-none focus:ring-2"><h2 className="">Offer Dashboard</h2></Link>
         </div>
         {/* Add match page UI here */}
+        <MatchBox/>
       </div>
     </>
   )
