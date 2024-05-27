@@ -13,11 +13,15 @@ const schemaDefinition = {
     type: "String",
     required: true
   },
-  offerId:{ // Id of the loan offer in db
-    type: "String",
+  loanId:{ // Id of the loan offer in db
+    type: "ObjectId",
     required: true
   },
-  status: { // Unsure what this represents, risk? Eligibility?
+  borrowId:{ // Id of the borrow offer in db
+    type: "ObjectId",
+    required: true
+  },
+  status: { // status of the match: pending, accepted, rejected
     type: "String",
     required: true
   }
