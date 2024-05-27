@@ -106,7 +106,9 @@ export const LoginByEmail = async (req: Request, res: Response) => {
         const payload = { id: user.id, role: user.role };
         const token = jwt.sign(payload, secretKey, { expiresIn: '1h' });
 
-        return res.status(200).json({ token });
+        // Hacky way of passing ID back in response while debugging JWT decoding bug that is blocking dev
+        // TODO: Make secure with proper jwt decoding and make considerations on how to securely provide secret_key for decoding in frontend context. usually solution is SSR...
+        return res.status(200).json({ token , id: user.id});
     } catch (error) {
         return res.status(500).json({ error: 'Server error' });
     }
@@ -138,7 +140,7 @@ export const LoginByPhone = async (req: Request, res: Response) => {
         const payload = { id: user.id, role: user.role };
         const token = jwt.sign(payload, secretKey, { expiresIn: '1h' });
 
-        return res.status(200).json({ token });
+        return res.status(200).json({ token, id: user.id});
     } catch (error) {
         return res.status(500).json({ error: 'Server error' });
     }
@@ -199,7 +201,7 @@ export const Signup = async (req: Request, res: Response) => {
 
         // Do not store raw, change later
         const user: User = {
-            id: uuidv4(),
+            id: uuidv4(), 
             firstName,
             lastName,
             email,
@@ -220,7 +222,7 @@ export const Signup = async (req: Request, res: Response) => {
             return res.status(500).json({ error: 'Failed to create user' });
         }
 
-        return res.status(201).json({ message: 'User registered' });
+        return res.status(201).json({ message: 'User registered'});
     } catch (error) {
         return res.status(500).json({ error: 'Server error' });
     }
