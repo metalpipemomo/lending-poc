@@ -34,10 +34,10 @@ const schemaDefinition = {
     required: true
   },
   isLoan: { // TRUE means this is a loan, meaning it is entered by a lender, FALSE meaning this is not a loan but a request from a borrower
-    type: "Boolean",
+    type: "String",
     required: true
   },
-  riskLevel: { // "low-risk" "high-risk" "black-listed" 
+  riskLevel: { // "low, medium, high"
     type: "String",
     required: true
   },
