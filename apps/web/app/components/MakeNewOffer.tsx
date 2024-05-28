@@ -109,7 +109,7 @@ const MakeNewOffer = () => {
         expiryDate: expiryDate
       } 
     } else if(lsId){
-      const rlevel = setRiskLevel({ desiredRisk: "random" }); // use generated risk string in borrow offer case -> for now using dummy method instead of a risk service
+      const rlevel = "low-risk"; // hard coding low-risk for now
       postData = {
         userId: lsId,
         loanAmount: parseInt(loanAmount),

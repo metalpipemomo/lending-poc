@@ -8,6 +8,8 @@ import jwt from 'jsonwebtoken';
 import Axios from 'axios';
 import { ObjectId } from 'mongodb';
 import MatchBoxItem from '../components/MatchBoxItem';
+import { FaArrowAltCircleLeft } from "react-icons/fa";
+import { FaArrowAltCircleRight } from "react-icons/fa";
 
   // Define an interface for explicit TS type definition according to schema of match
 interface Match{
@@ -17,13 +19,16 @@ interface Match{
   offerId: string,
   status: string
 }
+
   
 
 const MatchBox = () => {
   const [decodedUserId, setDecodedUserId] = useState(''); // will be pulling directly from localstorage already decoded rather than decoding using JWT
   const [rawJWT, setRawJWT] = useState('');
   const [maxPageCount, setMaxPageCount] = useState(0); // for pagination
+  const [pageCount, setPageCount] = useState(1);
   const [fetchedMatches, setFetchedMatches] = useState<Match[]>([]); // To hold raw api response
+  const [displayedMatches, setDisplayedMatches] = useState<Match[]>([]);
   //const [secretKey, setSecretKey] = useState('');
 
   // Re-render when user ID is decoded and set
@@ -74,21 +79,39 @@ const MatchBox = () => {
     fetchMatches();
   }, []);
 
-  useEffect(()=>{
-    console.log("matches? ")
-    console.log(fetchedMatches);
-  }, [fetchedMatches])
+  // Match list change re-render
+  useEffect(() => {
+    setDisplayedMatches(fetchedMatches.slice((pageCount - 1) * 6, (pageCount - 1) * 6 + 6));
+  }, [pageCount, displayedMatches, fetchedMatches]);
+
+  const incrementPage = () => {
+    if (pageCount + 1 <= maxPageCount) {
+      setPageCount(pageCount + 1);
+    }
+  }
+  const decrementPage = () => {
+    if (pageCount - 1 <= 0) {
+      setPageCount(1);
+    } else {
+      setPageCount(pageCount - 1);
+    }
+  }
 
   return (
     <>
       <div className= "text-white p-3">MatchBox component testing grabbing user ID: <h1 className="inline font-bold">{decodedUserId ? decodedUserId : 'null'}</h1></div>
-      <div className="p-3 text-white flex justify-center">
+      <div className="p-3 text-white flex flex-col items-center justify-center">
         <ul id="matches-offers" className="h-[95%]  w-1/5 shadow-sm flex flex-col items-center relative">
           {/* Map all the loaded entries data into list items */}
-          {fetchedMatches.map(match => 
+          {displayedMatches.map(match => 
             <MatchBoxItem match={match}/>
           )}
         </ul>
+        <div className={maxPageCount != 1 ? 'text-lg' : 'hidden'}>
+          <div className="w-full h-fit text-white cursor-pointer flex flex-row items-center justify-center gap-4" >
+            <span className="inline-block" onClick={decrementPage}><FaArrowAltCircleLeft /></span><span className="inline-block text-white">{pageCount}/{maxPageCount}</span><span className="inline-block" onClick={incrementPage}><FaArrowAltCircleRight /></span>
+          </div>
+        </div>
       </div>
     </>
   )
