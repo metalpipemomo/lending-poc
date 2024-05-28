@@ -22,197 +22,156 @@ interface Offer{
   userId: string,
   loanAmount: number,
   interestRate: number,
-  dueDate: string,
-  dateOfIssue: string,
+  dueDate: Date,
+  dateOfIssue: Date,
   loanTerm: number,
   numberOfInstallments: number,
   isLoan: boolean,
   riskLevel: string,
-  expiryDate: string
+  expiryDate: Date
 }
 
 // React component for an offer loaded from the DB. Displayed on dashboard.
 const OfferBox: React.FC  = () => { // explicit type on OfferBox is inferred for the prop
   // Pulled data state
-  const [fetchedOffers, setFetchedOffers] = useState<Offer[]>([]); // To hold raw api response
+  const [fetchedOffers, setFetchedOffers] = useState<Offer[]>([]);
   const [currentFilteredOffers, setCurrentFilteredOffers] = useState<Offer[]>([]);
-  const [loanOffers, setLoanOffers] = useState<Offer[]>([]); // for filtering loans
-  const [borrowOffers, setBorrowOffers] = useState<Offer[]>([]); // for filtering borrows
-  // Pagination state
-  const [displayedOffers, setDisplayedOffers] = useState<Offer[]>([]); // for displaying current paginated results
+  const [displayedOffers, setDisplayedOffers] = useState<Offer[]>([]);
   const [maxPageCount, setMaxPageCount] = useState(0);
   const [pageCount, setPageCount] = useState(1);
+  const [offerBox, setOfferBox] = useState<boolean>(true); // New offerBox state
   const maxOffers = 6;
-  // TODO: Integrate axios
-  //const api = Axios(); // Note have to do this outside of conditional code blocks and hooks -> HAVING ISSUES WITH REQUESTS NOT GOING OVER NETWORK USING AXIOS
-  const [offerIsOpen, setOfferIsOpen] = useState(false);
+
+  const [filters, setFilters] = useState({
+    amount: null as 'ascending' | 'descending' | null,
+    interest: null as 'ascending' | 'descending' | null,
+    due: null as 'ascending' | 'descending' | null,
+    risk: 'neutral' as 'low' | 'high' | 'neutral',
+    type: 'neutral' as 'loan' | 'borrow' | 'neutral'
+  });
+
+  const JWTToken = localStorage.getItem('jwtToken');
   const offerSelectionController = useAnimation();
-  const offerController = useAnimation();
+  const [offerIsOpen, setOfferIsOpen] = useState(false);
   const [offerPopState, setOfferPopState] = useState("closed");
-  const [currOfferType, setCurrOfferType] = useState("neutral");
 
-  const JWTToken = localStorage.getItem('jwtToken'); 
-
-  // Want to fetch and render in a useEffect hook
-  useEffect(()=>{
+  useEffect(() => {
     const fetchOffers = () => {
-      Axios.get('http://localhost:4040/api/loan-service/offers/', { headers: {'content-type': 'application/json', "Authorization" : `Bearer ${JWTToken}`}})
+      Axios.get('http://localhost:4040/api/loan-service/offers/', {
+        headers: {
+          'content-type': 'application/json',
+          "Authorization": `Bearer ${JWTToken}`
+        }
+      })
         .then((res) => {
-          // console.log('full response of offers: ', res);
-          // console.log('Got offers res on front-end:', res.data);
           setFetchedOffers(res.data);
-          setCurrentFilteredOffers(res.data); // set both at first as no filters to start
-          setMaxPageCount(Math.ceil(res.data.length / maxOffers)); // set max page count
+          setCurrentFilteredOffers(res.data);
+          setMaxPageCount(Math.ceil(res.data.length / maxOffers));
         })
         .catch((error) => {
           console.error('Error fetching offers on front-end:', error.message);
         });
     }
     fetchOffers();
-  }, []); // No dependency only running on load/mount
+  }, []);
 
-  // Another useEffect for paginating
-  // BUG: I can't figure out why this is firing twice on each page load, keep this bug in mind
-  useEffect(()=>{
-    // use current count to slice which offers to display
-    setDisplayedOffers(currentFilteredOffers.slice((pageCount - 1) * maxOffers, (pageCount - 1) * maxOffers + maxOffers)); // set current pagination based on counts
-    setMaxPageCount(Math.ceil(currentFilteredOffers.length / maxOffers)); // set max page count
-  }, [pageCount, currentFilteredOffers, maxPageCount]);
+  useEffect(() => {
+    applyFilters();
+  }, [filters, pageCount]);
 
-  // Update anytime displayed offers is modified due to filter option change
-  useEffect(()=>{
-    console.log("change in displayed offers detected.")
-  }, displayedOffers);
+  useEffect(() => {
+    setDisplayedOffers(currentFilteredOffers.slice((pageCount - 1) * maxOffers, (pageCount - 1) * maxOffers + maxOffers));
+    setMaxPageCount(Math.ceil(currentFilteredOffers.length / maxOffers));
+  }, [currentFilteredOffers]);
 
-  // Pagination helper methods to update state on click
+  const applyFilters = () => {
+    let filteredOffers = [...fetchedOffers];
+
+    if (filters.amount) {
+      filteredOffers.sort((a, b) => filters.amount === 'ascending' ? a.loanAmount - b.loanAmount : b.loanAmount - a.loanAmount);
+    }
+    if (filters.interest) {
+      filteredOffers.sort((a, b) => filters.interest === 'ascending' ? a.interestRate - b.interestRate : b.interestRate - a.interestRate);
+    }
+    if (filters.due) {
+      filteredOffers.sort((a, b) => filters.due === 'ascending' ? a.dueDate.toString().localeCompare(b.dueDate.toString()) : b.dueDate.toString().localeCompare(a.dueDate.toString()));
+    }
+    if (filters.risk !== 'neutral') {
+      filteredOffers = filteredOffers.filter((offer) => offer.riskLevel === (filters.risk === 'high' ? 'high-risk' : 'low-risk'));
+    }
+    if (filters.type !== 'neutral') {
+      filteredOffers = filteredOffers.filter((offer) => offer.isLoan === (filters.type === 'loan'));
+    }
+
+    setCurrentFilteredOffers(filteredOffers);
+  }
+
   const incrementPage = () => {
-    if(pageCount + 1 <= maxPageCount){
+    if (pageCount + 1 <= maxPageCount) {
       setPageCount(pageCount + 1);
     }
   }
   const decrementPage = () => {
-    if(pageCount - 1 <= 0){
+    if (pageCount - 1 <= 0) {
       setPageCount(1);
-    } else{
-      setPageCount(pageCount-1);
+    } else {
+      setPageCount(pageCount - 1);
     }
   }
 
-  // helper method to handle incoming inputs to sort offers from FilteringOptions component
-  const handleFilter =  (filterType: string) => {
-    // Check which filter or sorting control called the function
-    switch(filterType){
+  const handleFilter = (filterType: string) => {
+    const newFilters = { ...filters };
+
+    switch (filterType) {
       case "amountAscend":
-        sortByDollarAmountAscending();
+        newFilters.amount = 'ascending';
         break;
       case "amountDescend":
-        sortByDollarAmountDescending();
+        newFilters.amount = 'descending';
         break;
       case "interestAscend":
-        sortByInterestAmountAscending();
+        newFilters.interest = 'ascending';
         break;
       case "interestDescend":
-        sortByInterestAmountDescending();
+        newFilters.interest = 'descending';
         break;
       case "dueAscend":
-        sortByDueDateAscending();
+        newFilters.due = 'ascending';
         break;
       case "dueDescend":
-        sortByDueDateDescending();
+        newFilters.due = 'descending';
         break;
       case "riskLow":
-        filterToRiskLevel("low");
+        newFilters.risk = 'low';
         break;
       case "riskHigh":
-        filterToRiskLevel("high");
+        newFilters.risk = 'high';
         break;
       case "riskNeutral":
-        filterToRiskLevel("neutral");
+        newFilters.risk = 'neutral';
         break;
       case "borrow":
-        if(currOfferType === "borrow"){
-          filterToOfferType("neutral");
-        } else {
-          filterToOfferType("borrow");
-        }
+        newFilters.type = newFilters.type === 'borrow' ? 'neutral' : 'borrow';
         break;
       case "loan":
-        if(currOfferType === "loan"){
-          filterToOfferType("neutral");
-        } else {
-          filterToOfferType("loan");
-        }
+        newFilters.type = newFilters.type === 'loan' ? 'neutral' : 'loan';
         break;
-        case "all":
-          showAllOffers();
-          break;
-      default:
-        break;
-    }
-  }
-
-  // Sorting methods
-  const sortByDollarAmountAscending  = () => {
-    const sortedOffers = [...fetchedOffers].sort((a, b) => a.loanAmount - b.loanAmount);
-    setCurrentFilteredOffers(sortedOffers);
-    setDisplayedOffers(sortedOffers.slice((pageCount - 1) * maxOffers, (pageCount - 1) * maxOffers + maxOffers));
-  };
-  const sortByDollarAmountDescending = () => {
-    const sortedOffers = [...fetchedOffers].sort((a, b) => b.loanAmount - a.loanAmount); 
-    setCurrentFilteredOffers(sortedOffers);
-    setDisplayedOffers(sortedOffers.slice((pageCount - 1) * maxOffers, (pageCount - 1) * maxOffers + maxOffers));
-  };
-  const sortByInterestAmountAscending = () => {
-    const sortedOffers = [...fetchedOffers].sort((a, b) => a.interestRate - b.interestRate);
-    setCurrentFilteredOffers(sortedOffers);
-    setDisplayedOffers(sortedOffers.slice((pageCount - 1) * maxOffers, (pageCount - 1) * maxOffers + maxOffers));
-  }
-  const sortByInterestAmountDescending = () => {
-    const sortedOffers = [...fetchedOffers].sort((a, b) => b.interestRate - a.interestRate);
-    setCurrentFilteredOffers(sortedOffers);
-    setDisplayedOffers(sortedOffers.slice((pageCount - 1) * maxOffers, (pageCount - 1) * maxOffers + maxOffers));
-  }
-  // Changed to using localeCompare as we are storing ISO format dates on DB and this works better than Date conversion
-  const sortByDueDateAscending = () => {
-    const sortedOffers = [...fetchedOffers].sort((a, b) => a.dueDate.localeCompare(b.dueDate));
-    setCurrentFilteredOffers(sortedOffers);
-    setDisplayedOffers(sortedOffers.slice((pageCount - 1) * maxOffers, (pageCount - 1) * maxOffers + maxOffers));
-  };
-  const sortByDueDateDescending = () => {
-    const sortedOffers = [...fetchedOffers].sort((a, b) => b.dueDate.localeCompare(a.dueDate));
-    setCurrentFilteredOffers(sortedOffers);
-    setDisplayedOffers(sortedOffers.slice((pageCount - 1) * maxOffers, (pageCount - 1) * maxOffers + maxOffers));
-  };
-  const filterToRiskLevel = (riskLevel: string) => {
-    switch (riskLevel) {
-      case "high":
-        const highRiskOffers = fetchedOffers.filter((offer) => offer.riskLevel === "high-risk");
-        setCurrentFilteredOffers(highRiskOffers);
-        setDisplayedOffers(highRiskOffers.slice((pageCount - 1) * maxOffers, (pageCount - 1) * maxOffers + maxOffers));
-        break;
-      case "low":
-        const lowRiskOffers = fetchedOffers.filter((offer) => offer.riskLevel === "low-risk");
-        setCurrentFilteredOffers(lowRiskOffers);
-        setDisplayedOffers(lowRiskOffers.slice((pageCount - 1) * maxOffers, (pageCount - 1) * maxOffers + maxOffers));
-        break;
-      case "neutral":
-        setCurrentFilteredOffers(fetchedOffers);
-        setDisplayedOffers(fetchedOffers.slice((pageCount - 1) * maxOffers, (pageCount - 1) * maxOffers + maxOffers));
+      case "all":
+        newFilters.amount = null;
+        newFilters.interest = null;
+        newFilters.due = null;
+        newFilters.risk = 'neutral';
+        newFilters.type = 'neutral';
+        setCurrentFilteredOffers(fetchedOffers);  // Reset to show all offers
+        setPageCount(1); // Reset to the first page
         break;
       default:
         break;
     }
-  };
-  // Show All function to sort by dateOfIssue from newest to oldest
-  const showAllOffers = () => {
-    const sortedOffers = [...fetchedOffers].sort((a, b) => b.dateOfIssue.localeCompare(a.dateOfIssue));
-    setCurrentFilteredOffers(sortedOffers);
-    setDisplayedOffers(sortedOffers.slice((pageCount - 1) * maxOffers, (pageCount - 1) * maxOffers + maxOffers));
-    setCurrOfferType("neutral");
-  };
+    setFilters(newFilters);
+  }
 
-   // State and anim transition handling for filtering/sorting inputs
-   const processAnim = (controllerName: string) => {
+  const processAnim = (controllerName: string) => {
     switch (controllerName) {
       case 'offer':
         if (offerPopState === 'closed') {
@@ -238,32 +197,6 @@ const OfferBox: React.FC  = () => { // explicit type on OfferBox is inferred for
         break;
     }
   };
-
-  const filterToOfferType  = (offerType: string) => {
-    switch (offerType) {
-      case "borrow":
-        console.log("brying")
-        const borrowOffers = fetchedOffers.filter((offer) => offer.isLoan === false);
-        setCurrentFilteredOffers(borrowOffers);
-        setDisplayedOffers(borrowOffers.slice((pageCount - 1) * maxOffers, (pageCount - 1) * maxOffers + maxOffers));
-        setCurrOfferType("borrow")
-        break;
-      case "loan":
-        console.log("trying")
-        const loanOffers = fetchedOffers.filter((offer) => offer.isLoan === true);
-        setCurrentFilteredOffers(loanOffers);
-        setDisplayedOffers(loanOffers.slice((pageCount - 1) * maxOffers, (pageCount - 1) * maxOffers + maxOffers));
-        setCurrOfferType("loan")
-        break;
-      case "neutral":
-        setCurrentFilteredOffers(fetchedOffers);
-        setDisplayedOffers(fetchedOffers.slice((pageCount - 1) * maxOffers, (pageCount - 1) * maxOffers + maxOffers));
-        setCurrOfferType("neutral")
-        break;
-      default:
-        break;
-    }
-  }
 
   return (
     <>
