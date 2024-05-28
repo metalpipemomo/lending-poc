@@ -95,6 +95,9 @@ const FilteringOptions: React.FC<FilteringOptionsProps> = ({ filterHandlerFuncti
           filterHandlerFunction("riskLow");
         }
         break;
+      case 'all':
+        filterHandlerFunction("all");
+        break;
       default:
         break;
     }
@@ -102,6 +105,9 @@ const FilteringOptions: React.FC<FilteringOptionsProps> = ({ filterHandlerFuncti
 
   return (
     <motion.div id="dashboard-offers-filtering-options" className="w-[95%] h-8 flex flex-row items-center justify-between">
+      <motion.span id="dashboard-offers-all-filter" className="w-1/5 text-white flex flex-row items-center justify-center" onClick={() => { processAnim("all") }}>
+        <motion.span className="inline-block cursor-pointer text-xl">All</motion.span>
+      </motion.span>
       <motion.span id="dashboard-offers-amount-sort" className="w-1/4 text-white flex flex-row items-center justify-center " onClick={()=>{processAnim("amount")}}>
         <motion.span 
           className="inline-block pr-1 p-2 text-md cursor-pointer"

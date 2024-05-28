@@ -9,13 +9,13 @@ interface Offer{
   userId: string,
   loanAmount: number,
   interestRate: number,
-  dueDate: string,
-  dateOfIssue: string,
+  dueDate: Date,
+  dateOfIssue: Date,
   loanTerm: number,
   numberOfInstallments: number,
   isLoan: boolean,
   riskLevel: string,
-  expiryDate: string
+  expiryDate: Date
 }
 
 const DashboardGraphics: React.FC<{ currentOffers: Offer[] }> = ({ currentOffers }) => {
