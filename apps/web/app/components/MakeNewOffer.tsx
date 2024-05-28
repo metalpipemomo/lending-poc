@@ -72,6 +72,7 @@ const MakeNewOffer = () => {
     console.log("Form submitted: ", data);
 
     let postData: Offer;
+    const lsId = localStorage.getItem('loggedInUserId');
 
     // GET HELP WITH DECODING AND ATTACHING USER ID TO POST REQUESTS
   //   // Get token to pass in headers for auth
@@ -94,9 +95,9 @@ const MakeNewOffer = () => {
   // }
 
     // Distinguish what type of offer this is and generate non-inputted fields to complete post data obj
-    if(isLoan){
+    if(isLoan && lsId){
       postData = {
-        userId: "loanOfferPostedWithoutUserID",
+        userId: lsId,
         loanAmount: parseInt(loanAmount),
         interestRate: parseFloat(interestRate),
         dueDate: dueDate,
@@ -107,10 +108,10 @@ const MakeNewOffer = () => {
         riskLevel: riskLevel, // use inputted risk string in a lending loan offer case
         expiryDate: expiryDate
       } 
-    } else{
+    } else if(lsId){
       const rlevel = setRiskLevel({ desiredRisk: "random" }); // use generated risk string in borrow offer case -> for now using dummy method instead of a risk service
       postData = {
-        userId: "borrowOfferPostedWithoutUserID",
+        userId: lsId,
         loanAmount: parseInt(loanAmount),
         interestRate: parseFloat(interestRate),
         dueDate: dueDate,
