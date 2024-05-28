@@ -38,6 +38,8 @@ export default function PhoneLogin() {
                 password: password
             })
             .then((e) => {
+                // Successful login post -> Want to set localstorage userID here so it's accessible between components per session while JWT decoding issue is being worked out.
+                localStorage.setItem('loggedInUserId', e.data.id);
                 localStorage.setItem('jwtToken', e.data.token);
                 router.push('/dashboard');
             })
