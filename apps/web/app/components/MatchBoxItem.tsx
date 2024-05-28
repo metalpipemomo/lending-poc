@@ -22,12 +22,15 @@ const MatchBoxItem = ({match} : {match: Match}) => {
   const [isLender, setIsLender] = useState(false);
   const currUserId = localStorage.getItem('loggedInUserId');
 
-  // Determine if current user is the lender or borrower for the match
-  // if(match.loanerId == currUserId){
-  //   setIsLender(true)
-  // } else if(match.borrowerId == currUserId){
-  //   setIsLender(false);
-  // }
+  useEffect(()=>{
+    //Determine if current user is the lender or borrower for the match
+    if(match.loanerId == currUserId){
+      setIsLender(true)
+    } else if(match.borrowerId == currUserId){
+      setIsLender(false);
+    }
+  });
+  
 
   return (
     <li key={match._id.toString()} className="mb-2 w-full px-2 py-2 text-xs text-slate-700 bg-gray-50 rounded-lg relative">

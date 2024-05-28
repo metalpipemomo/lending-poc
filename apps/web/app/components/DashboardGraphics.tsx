@@ -55,25 +55,25 @@ const DashboardGraphics: React.FC<{ currentOffers: Offer[] }> = ({ currentOffers
         <div className="text-slate-700 bg-gray-50 w-full h-[95%] rounded-lg">
           {/* <div id="dashboard-charts-first-quadrant" className="border-green-700 border-2">
             <div>
-              Average Interest
+              Offers to lend money: {loanCount}
             </div>
             <div>
-              Loan Amounts History
+              Offers to borrow money: {borrowCount}
             </div>
           </div>
           <div id="dashboard-charts-second-quadrant" className="border-red-700 border-2">
             <div>
-              Offer availability
+              Number of high-risk offers: {highRiskCount}
             </div>
           </div>
           <div id="dashboard-charts-third-quadrant" className="border-blue-700 border-2">
             <div>
-              Risk distribution
+            Number of low-risk offers:{lowRiskCount}
             </div>
           </div>
           <div id="dashboard-charts-fourth-quadrant" className="border-yellow-700 border-2">
             <div>
-              Amount distributiion
+              Number of black-listed: {blackListCount}
             </div>
           </div> */}
         </div>
