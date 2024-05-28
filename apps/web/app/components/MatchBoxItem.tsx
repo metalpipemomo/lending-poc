@@ -38,11 +38,6 @@ const MatchBoxItem = ({match} : {match: Match}) => {
         <h2 className="text-md mt-4"><span className="font-bold">Status: </span><span className={match.status == "pending_match" ? 'text-[#FF0000] text-xs pt-6' : 'text-[#00FF21] text-xs pt-6'}>{match.status == "pending_match" ? 'pending' : 'accepted'}</span></h2>
         <div></div>
       </div>
-      {/* <div className="absolute right-2 top-3">
-        <span  className="text-xl">{offer.numberOfInstallments.toString()}<span> Installments | </span><span>{offer.loanTerm.toString()} Months</span></span>
-        <div className="text-right pt-1"><span className="font-bold"> Pay by: </span>{offer.dueDate.toString().slice(0,10)}</div>
-        <div className="text-right pt-1"><span className={`${offer.riskLevel === "high-risk" ? 'text-[#FF0000]': offer.riskLevel === "low-risk" ? 'text-[#00FF21]': ''}`}>{offer.riskLevel}</span></div>
-      </div> */}
       <span className="absolute right-2 bottom-1"><span className="font-bold">Offer ID: </span>{match._id.toString()}</span>
       <div className="absolute top-2 right-2 flex justify-between gap-1.5 w-fit">
         <span id="dashboard-link-view-matches" className="w-fit p-1.5 cursor-pointer font-semibold rounded-full shadow-sm border border-[#FF0000] bg-[#FF0000]  text-white hover:bg-gray-50 hover:text-[#FF0000] hover:border-[#FF0000] focus:outline-none focus:ring-2"><h2 className=""><ImCross /></h2></span>

@@ -80,15 +80,17 @@ const MatchBox = () => {
   }, [fetchedMatches])
 
   return (
-    <div className="p-3 text-white">
-      <div>MatchBox component testing grabbing user ID: <h1 className="inline font-bold">{decodedUserId ? decodedUserId : 'null'}</h1></div>
-      <ul id="matches-offers" className="h-[95%]  w-1/5 shadow-sm flex flex-col items-center relative">
-        {/* Map all the loaded entries data into list items */}
-        {fetchedMatches.map(match => 
-          <MatchBoxItem match={match}/>
-        )}
-      </ul>
-    </div>
+    <>
+      <div className= "text-white p-3">MatchBox component testing grabbing user ID: <h1 className="inline font-bold">{decodedUserId ? decodedUserId : 'null'}</h1></div>
+      <div className="p-3 text-white flex justify-center">
+        <ul id="matches-offers" className="h-[95%]  w-1/5 shadow-sm flex flex-col items-center relative">
+          {/* Map all the loaded entries data into list items */}
+          {fetchedMatches.map(match => 
+            <MatchBoxItem match={match}/>
+          )}
+        </ul>
+      </div>
+    </>
   )
 }
 
