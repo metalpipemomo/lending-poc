@@ -82,7 +82,7 @@ const MatchBox = () => {
   // Match list change re-render
   useEffect(() => {
     setDisplayedMatches(fetchedMatches.slice((pageCount - 1) * 6, (pageCount - 1) * 6 + 6));
-  }, [pageCount, displayedMatches, fetchedMatches]);
+  }, [pageCount, fetchedMatches]);
 
   const incrementPage = () => {
     if (pageCount + 1 <= maxPageCount) {
