@@ -64,7 +64,7 @@ const MatchBox = () => {
     }
 
     const fetchMatches= () => {
-      Axios.get('http://localhost:4040/api/loan-service/matches/', { headers: {'content-type': 'application/json', "Authorization" : `Bearer ${JWTToken}`}})
+      Axios.get('http://localhost:4040/api/loan-service/matches/byUser/' + pulledId, { headers: {'content-type': 'application/json', "Authorization" : `Bearer ${JWTToken}`}})
         .then((res) => {
           // console.log('full response of offers: ', res);
           // console.log('Got offers res on front-end:', res.data);
@@ -99,7 +99,7 @@ const MatchBox = () => {
 
   return (
     <>
-      <div className= "text-white p-3">MatchBox component testing grabbing user ID: <h1 className="inline font-bold">{decodedUserId ? decodedUserId : 'null'}</h1></div>
+      <div className= "text-white p-3">Logged in under user: <h1 className="inline font-bold">{decodedUserId ? decodedUserId : 'null'}</h1></div>
       <div className="p-3 text-white flex flex-col items-center justify-center">
         <ul id="matches-offers" className="h-[95%]  w-1/5 shadow-sm flex flex-col items-center relative">
           {/* Map all the loaded entries data into list items */}
