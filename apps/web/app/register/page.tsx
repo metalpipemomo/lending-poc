@@ -9,6 +9,7 @@ import Image from 'next/image';
 import { z } from 'zod';
 import useAxios from '../../lib/AxiosBase';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link'
 
 const RegisterSchema = z.object({
     firstName: z.string().min(1, 'First name is required'),
@@ -111,57 +112,62 @@ export default function Register() {
     };
 
     return (
-        <div className='flex flex-col items-center justify-center w-screen h-screen'>
-            <form onSubmit={(e) => FormSubmit(e)} className='flex flex-col p-8 w-4/12 bg-white rounded-md shadow-md space-y-4 items-center justify-center'>
-                <h1 className={'text-xl bold font-bold mb-4'}>Registration Form</h1>
-                <FormRow>
-                    <PhoneInput className='[&>input]:outline-none border rounded-sm px-2 py-1 shadow-md' placeholder={"Phone Number"} value={phoneNumber} onChange={setPhoneNumber} onBlur={() => ValidateField('phoneNumber', phoneNumber)}/>
-                </FormRow>
-                <FormRow>
-                    <FormInput placeholder='Email' type="email" ref={email} onBlur={() => ValidateField('email', email.current?.value)}/>
-                    <div className='flex flex-row'>
-                        <button className='pr-2' onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            setPasswordToggle(!passwordToggled);
-                        }}>
-                            <Image
-                                src={passwordToggled ? RevealedPassIcon : HiddenPassIcon}
-                                alt={passwordToggled ? 'Hide password' : 'Show password'}
-                                height={20}
-                                width={20}/>
-                        </button>
-                        <FormInput placeholder='Password' type={passwordToggled ? 'text' : 'password'} ref={password} onBlur={() => ValidateField('password', password.current?.value)}/>
-                    </div>
-                </FormRow>
-                <FormRow>
-                    <FormInput placeholder='First Name' type="text" ref={firstName} onBlur={() => ValidateField('firstName', firstName.current?.value)}/>
-                    <FormInput placeholder='Last Name' type="text" ref={lastName} onBlur={() => ValidateField('lastName', lastName.current?.value)}/>
-                </FormRow>
-                <FormRow>
-                    <FormInput placeholder='Street Address' type='text' ref={streetAddress} onBlur={() => ValidateField('streetAddress', streetAddress.current?.value)}/>
-                    <FormInput placeholder='Postal Code' type='text' ref={postalCode} onBlur={() => ValidateField('postalCode', postalCode.current?.value)}/>
-                </FormRow>
-                <FormRow>
-                    <FormInput placeholder='Country' type='text' ref={country} onBlur={() => ValidateField('country', country.current?.value)}/>
-                    <FormInput placeholder='Province' type='text' ref={province} onBlur={() => ValidateField('province', province.current?.value)}/>
-                </FormRow>
-                <FormRow>
-                    <FormInput placeholder='City' type='text' ref={city} onBlur={() => ValidateField('city', city.current?.value)}/>
-                </FormRow>
-                <FormRow>
-                    <FormInput placeholder='Credit Score' type='number' ref={creditScore} onBlur={() => ValidateField('creditScore', parseInt(creditScore.current?.value || '0'))}/>
-                </FormRow>
-                <button className='w-fit px-4 py-2 text-sm font-semibold rounded-full shadow-sm border border-black bg-black text-white hover:bg-gray-300 hover:text-gray-800 hover:border-gray-800 focus:outline-none focus:ring-2' type={'submit'}>Register</button>
-                {errors.length > 0 && (
-                    <div className="flex flex-col bg-gray-100 w-full px-2 py-2 space-y-1">
-                        {errors.map((error, index) => (
-                            <p className='text-red-500' key={index}>*{error}</p>
-                        ))}
-                    </div>
-                )}
-            </form>
-        </div>
+        <>
+            <div id="register-header" className="flex justify-between w-full h-fit p-1.5 pl-3 text-slate-700 bg-gray-50">
+                <Link href="/"><h1 className="text-2xl pb-1.5">Lending Service POC</h1></Link>
+            </div>
+            <div className='flex flex-col items-center justify-center w-screen h-screen'>
+                <form onSubmit={(e) => FormSubmit(e)} className='flex flex-col p-8 w-4/12 bg-white rounded-md shadow-md space-y-4 items-center justify-center'>
+                    <h1 className={'text-xl bold font-bold mb-4'}>Registration Form</h1>
+                    <FormRow>
+                        <PhoneInput className='[&>input]:outline-none border rounded-sm px-2 py-1 shadow-md' placeholder={"Phone Number"} value={phoneNumber} onChange={setPhoneNumber} onBlur={() => ValidateField('phoneNumber', phoneNumber)}/>
+                    </FormRow>
+                    <FormRow>
+                        <FormInput placeholder='Email' type="email" ref={email} onBlur={() => ValidateField('email', email.current?.value)}/>
+                        <div className='flex flex-row'>
+                            <button className='pr-2' onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setPasswordToggle(!passwordToggled);
+                            }}>
+                                <Image
+                                    src={passwordToggled ? RevealedPassIcon : HiddenPassIcon}
+                                    alt={passwordToggled ? 'Hide password' : 'Show password'}
+                                    height={20}
+                                    width={20}/>
+                            </button>
+                            <FormInput placeholder='Password' type={passwordToggled ? 'text' : 'password'} ref={password} onBlur={() => ValidateField('password', password.current?.value)}/>
+                        </div>
+                    </FormRow>
+                    <FormRow>
+                        <FormInput placeholder='First Name' type="text" ref={firstName} onBlur={() => ValidateField('firstName', firstName.current?.value)}/>
+                        <FormInput placeholder='Last Name' type="text" ref={lastName} onBlur={() => ValidateField('lastName', lastName.current?.value)}/>
+                    </FormRow>
+                    <FormRow>
+                        <FormInput placeholder='Street Address' type='text' ref={streetAddress} onBlur={() => ValidateField('streetAddress', streetAddress.current?.value)}/>
+                        <FormInput placeholder='Postal Code' type='text' ref={postalCode} onBlur={() => ValidateField('postalCode', postalCode.current?.value)}/>
+                    </FormRow>
+                    <FormRow>
+                        <FormInput placeholder='Country' type='text' ref={country} onBlur={() => ValidateField('country', country.current?.value)}/>
+                        <FormInput placeholder='Province' type='text' ref={province} onBlur={() => ValidateField('province', province.current?.value)}/>
+                    </FormRow>
+                    <FormRow>
+                        <FormInput placeholder='City' type='text' ref={city} onBlur={() => ValidateField('city', city.current?.value)}/>
+                    </FormRow>
+                    <FormRow>
+                        <FormInput placeholder='Credit Score' type='number' ref={creditScore} onBlur={() => ValidateField('creditScore', parseInt(creditScore.current?.value || '0'))}/>
+                    </FormRow>
+                    <button className='w-fit px-4 py-2 text-sm font-semibold rounded-full shadow-sm border border-black bg-black text-white hover:bg-gray-300 hover:text-gray-800 hover:border-gray-800 focus:outline-none focus:ring-2' type={'submit'}>Register</button>
+                    {errors.length > 0 && (
+                        <div className="flex flex-col bg-gray-100 w-full px-2 py-2 space-y-1">
+                            {errors.map((error, index) => (
+                                <p className='text-red-500' key={index}>*{error}</p>
+                            ))}
+                        </div>
+                    )}
+                </form>
+            </div>
+        </>
     )
 }
 

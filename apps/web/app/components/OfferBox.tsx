@@ -200,7 +200,7 @@ const OfferBox: React.FC  = () => { // explicit type on OfferBox is inferred for
 
   return (
     <>
-      <div id="dashboard-offers-container" className="mt-2 w-[95%] pl-1 h-screen flex flex-row items-center gap-2">
+      <div id="dashboard-offers-container" className="mt-2 w-[95%] pl-1 h-screen flex flex-row items-center justify-center">
         {/* Display loaded items in a list on dashboard */}
         <ul id="dashboard-offers" className="h-[95%]  w-1/4 shadow-sm flex flex-col items-center relative">
           <FilteringOptions filterHandlerFunction={handleFilter}/>
@@ -236,9 +236,10 @@ const OfferBox: React.FC  = () => { // explicit type on OfferBox is inferred for
             </motion.span>
         </ul>
 
-        <div className="w-3/4 h-full">
+        {/* Scrapped data visualization aspect due to time constraints */}
+        {/* <div className="w-3/4 h-full">
           <DashboardGraphics currentOffers={currentFilteredOffers}/>
-        </div>
+        </div> */}
       </div>
     </>
     
