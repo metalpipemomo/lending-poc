@@ -49,7 +49,7 @@ async function seed() {
             dateOfIssue: new Date(),
             loanTerm: faker.number.int({ min: 6, max: 60 }),
             numberOfInstallments: faker.number.int({ min: 1, max: 12 }),
-            isLoan: faker.datatype.boolean(),
+            isLoan: faker.datatype.boolean().toString(),
             riskLevel: ['low-risk', 'high-risk', 'black-listed'][Math.floor(Math.random() * 3)],
             expiryDate: faker.datatype.boolean() ? faker.date.future() : undefined,
         };
